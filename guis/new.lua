@@ -1,3 +1,4 @@
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local mainapi = {
 	Categories = {},
 	GUIColor = {
@@ -6296,6 +6297,13 @@ local textguirender = textgui:CreateToggle({
 		mainapi:UpdateTextGUI()
 	end
 })
+local textguiextratext = textgui:CreateToggle({
+    Name = 'Hide ExtraText',
+    Tooltip = 'Hide additional info shown beside modules.',
+    Function = function()
+        mainapi:UpdateTextGUI()
+    end
+})
 local textguibox
 local textguifontcustom
 local textguicolorcustomtoggle
@@ -6764,7 +6772,11 @@ function mainapi:UpdateTextGUI(afterload)
 				holdertext.Position = UDim2.fromOffset(right and 3 or 6, 2)
 				holdertext.BackgroundTransparency = 1
 				holdertext.BorderSizePixel = 0
-				holdertext.Text = i..(v.ExtraText and " <font color='#A8A8A8'>"..v.ExtraText()..'</font>' or '')
+				if not (textguiextratext and textguiextratext.Enabled) and v.ExtraText then
+   				 	holdertext.Text = i.." <font color='#A8A8A8'>"..v.ExtraText()..'</font>'
+				else
+   				  	holdertext.Text = i
+				end
 				holdertext.TextSize = 15
 				holdertext.FontFace = textguifont.Value
 				holdertext.RichText = true
