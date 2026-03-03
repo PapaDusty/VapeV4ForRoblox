@@ -22,3 +22,6 @@ local color = vape.Libraries.color
 local uipallet = vape.Libraries.uipallet
 local getcustomasset = vape.Libraries.getcustomasset
 
+for _, v in {'AimAssist', 'Reach', 'Disabler', 'AntiFall', 'HitBoxes', 'Killaura', 'MurderMystery', 'AntiRagdoll', 'Gravity', 'SafeWalk', 'Blink', 'Invisible', 'LongJump', 'HighJump'} do
+	vape:Remove(v)
+end
