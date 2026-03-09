@@ -1,4 +1,5 @@
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local mainapi = {
 	Categories = {},
 	GUIColor = {
@@ -140,6 +141,8 @@ local getfontsize = function(text, size, font)
 	end
 	return textService:GetTextBoundsAsync(fontsize)
 end
+
+local clamp = function(x, a, b) return math.max(a, math.min(b, x)) end
 
 local function addBlur(parent, notif)
 	local blur = Instance.new('ImageLabel')
@@ -5359,6 +5362,87 @@ function mainapi:CreateNotification(title, text, duration, type)
 			notification:Destroy()
 		end)
 	end)
+end
+
+function mainapi:CreateProgressBar(initText)
+
+    local options = {}
+    if type(initText) == "table" then
+        options = initText
+        initText = options.Text
+    else
+        options.Text = initText or ""
+    end
+
+    local defaultPos = UDim2.new(0.5, 0, 1, -180)
+    local defaultSize = UDim2.new(0.17, 0, 0, 20)
+    local defaultBgColor = Color3.new(0, 0, 0)
+    local defaultBgTrans = 0.5  
+    local defaultFillColor = Color3.fromHSV(self.GUIColor.Hue, self.GUIColor.Sat, self.GUIColor.Value)
+    local defaultTextColor = uipallet.Text
+    local defaultTextSize = 20
+    local defaultFont = Enum.Font.Gotham
+    local defaultCornerRadius = UDim.new(0, 2)
+
+    local bar = Instance.new("Frame")
+    bar.Size = options.Size or defaultSize
+    bar.Position = options.Position or defaultPos
+    bar.AnchorPoint = options.AnchorPoint or Vector2.new(0.5, 0)
+    bar.BackgroundColor3 = options.BackgroundColor or defaultBgColor
+    bar.BackgroundTransparency = options.BackgroundTransparency or defaultBgTrans
+    bar.BorderSizePixel = options.BorderSizePixel or 5
+    bar.Visible = false
+    bar.Parent = self.gui
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = options.CornerRadius or defaultCornerRadius
+    corner.Parent = bar
+
+    local fill = Instance.new("Frame")
+    fill.Name = "Fill"
+    fill.Size = UDim2.new(0, 0, 1, 0)
+    fill.Position = UDim2.new(0, 0, 0, 0)
+    fill.BackgroundColor3 = options.FillColor or defaultFillColor
+    fill.BackgroundTransparency = options.FillTransparency or 0
+    fill.BorderSizePixel = options.BorderSizePixel or 5
+    fill.Parent = bar
+    local fillCorner = Instance.new("UICorner")
+    fillCorner.CornerRadius = options.CornerRadius or defaultCornerRadius
+    fillCorner.Parent = fill
+
+    local text = Instance.new("TextLabel")
+    text.Size = UDim2.new(1, 0, 1, 0)
+    text.Position = UDim2.new(0, 0, -1, 0)
+    text.BackgroundTransparency = 1
+    text.Text = options.Text or ""
+    text.TextColor3 = options.TextColor or defaultTextColor
+    text.TextSize = options.TextSize or defaultTextSize
+    text.Font = options.Font or defaultFont
+    text.TextStrokeTransparency = options.TextStrokeTransparency or 0
+    text.Parent = bar
+
+    local api = {
+        Object = bar,
+        Fill = fill,
+        TextLabel = text,
+        SetProgress = function(self, percent)
+            percent = clamp(percent, 0, 1)
+            self.Fill.Size = UDim2.new(percent, 0, 1, 0)
+        end,
+        SetFillColor = function(self, color)
+            self.Fill.BackgroundColor3 = color
+        end,
+        SetText = function(self, txt)
+            self.TextLabel.Text = txt
+        end,
+        SetVisible = function(self, visible)
+            self.Object.Visible = visible
+        end,
+        Destroy = function(self)
+            self.Object:Destroy()
+        end
+    }
+    return api
 end
 
 function mainapi:Load(skipgui, profile)
