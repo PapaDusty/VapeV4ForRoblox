@@ -1,4 +1,5 @@
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func)
 	func()
 end
@@ -12102,4 +12103,68 @@ run(function()
         end,
         Tooltip = 'Limits speed to prevent movement flags.'
     })
+end)
+
+run(function()
+	local AutoBerserker
+	local Mode
+	local EnemyRange
+	local lastUse = 0
+	local abilityRemote
+
+	task.spawn(function()
+		repeat task.wait() until replicatedStorage and replicatedStorage:FindFirstChild("events-@easy-games/game-core:shared/game-core-networking@getEvents.Events")
+		local eventsFolder = replicatedStorage["events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"]
+		abilityRemote = eventsFolder and eventsFolder:FindFirstChild("useAbility")
+	end)
+
+	AutoBerserker = vape.Categories.Utility:CreateModule({
+		Name = 'AutoBerserker',
+		Function = function(callback)
+			if callback then
+				AutoBerserker:Clean(runService.Heartbeat:Connect(function()
+					if not entitylib.isAlive then return end
+					if not abilityRemote then return end
+
+					local now = tick()
+					if now - lastUse < 1 then return end
+
+					local shouldActivate = false
+
+					if Mode.Value == 'Always' then
+						shouldActivate = true
+					elseif Mode.Value == 'In Combat' then
+						local enemies = entitylib.AllPosition({
+							Range = EnemyRange.Value,
+							Part = 'RootPart',
+							Players = true,
+						})
+						shouldActivate = #enemies > 0
+					end
+
+					if shouldActivate then
+						abilityRemote:FireServer("berserker_rage")
+						lastUse = now
+					end
+				end))
+			end
+		end,
+		Tooltip = 'Automatically activates Berserker rage ability.'
+	})
+	Mode = AutoBerserker:CreateDropdown({
+		Name = 'Mode',
+		List = {'Combat Only', 'Always'},
+		Function = function(val)
+			EnemyRange.Object.Visible = (val == 'Combat Only')
+		end
+	})
+	EnemyRange = AutoBerserker:CreateSlider({
+		Name = 'Enemy Range',
+		Min = 1,
+		Max = 30,
+		Default = 15,
+		Suffix = 'studs',
+		Darker = true,
+		Visible = false
+	})
 end)
