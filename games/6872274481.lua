@@ -1,3 +1,4 @@
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func)
 	func()
 end
@@ -1954,21 +1955,12 @@ run(function()
 	})
 end)
 	
-local Fly
-local LongJump
 run(function()
-    local Value
-    local VerticalValue
-    local WallCheck
-    local PopBalloons
-    local TP
-    local FlyTimer
+    local Value, VerticalValue, WallCheck, PopBalloons, TP, FlyTimer
     local rayCheck = RaycastParams.new()
     rayCheck.RespectCanCollide = true
     local up, down, old = 0, 0
-    local FlyAnywayProgressBarFrame
-    local FlyAnywayProgressBarFrame2
-    local FlyAnywayProgressBartext
+    local FlyBar
 
     Fly = vape.Categories.Blatant:CreateModule({
         Name = 'Fly',
@@ -1979,56 +1971,21 @@ run(function()
                 up, down, old = 0, 0, bedwars.BalloonController.deflateBalloon
                 bedwars.BalloonController.deflateBalloon = function() end
                 local tpTick, tpToggle, oldy = tick(), true
+
                 if FlyTimer.Enabled then
-                    FlyAnywayProgressBarFrame = Instance.new("Frame")
-                    FlyAnywayProgressBarFrame.AnchorPoint = Vector2.new(0.5, 0)
-                    FlyAnywayProgressBarFrame.Position = UDim2.new(0.5, 0, 1, -200)
-                    FlyAnywayProgressBarFrame.Size = UDim2.new(0.2, 0, 0, 20)
-                    FlyAnywayProgressBarFrame.BackgroundTransparency = 0.5
-                    FlyAnywayProgressBarFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-                    FlyAnywayProgressBarFrame.BorderSizePixel = 5
-                    FlyAnywayProgressBarFrame.Visible = false
-                    FlyAnywayProgressBarFrame.Parent = vape.gui
-
-                    local UICorner = Instance.new("UICorner")
-                    UICorner.CornerRadius = UDim.new(0, 10) 
-                    UICorner.Parent = FlyAnywayProgressBarFrame
-
-                    FlyAnywayProgressBarFrame2 = Instance.new("Frame")
-                    FlyAnywayProgressBarFrame2.AnchorPoint = Vector2.new(0, 0)
-                    FlyAnywayProgressBarFrame2.Position = UDim2.new(0, 0, 0, 0)
-                    FlyAnywayProgressBarFrame2.Size = UDim2.new(1, 0, 0, 20)
-                    FlyAnywayProgressBarFrame2.BackgroundTransparency = 0
-                    FlyAnywayProgressBarFrame2.BackgroundColor3 = Color3.new(0, 1, 0)
-                    FlyAnywayProgressBarFrame2.BorderSizePixel = 5
-                    FlyAnywayProgressBarFrame2.Parent = FlyAnywayProgressBarFrame
-
-                    local UICorner2 = Instance.new("UICorner")
-                    UICorner2.CornerRadius = UDim.new(0, 10) 
-                    UICorner2.Parent = FlyAnywayProgressBarFrame2
-
-                    FlyAnywayProgressBartext = Instance.new("TextLabel")
-                    FlyAnywayProgressBartext.Text = "2.0s"
-                    FlyAnywayProgressBartext.Font = Enum.Font.Gotham
-                    FlyAnywayProgressBartext.TextStrokeTransparency = 0
-                    FlyAnywayProgressBartext.TextColor3 = Color3.new(0.9, 0.9, 0.9)
-                    FlyAnywayProgressBartext.TextSize = 20
-                    FlyAnywayProgressBartext.Size = UDim2.new(1, 0, 1, 0)
-                    FlyAnywayProgressBartext.BackgroundTransparency = 1
-                    FlyAnywayProgressBartext.Position = UDim2.new(0, 0, -1, 0)
-                    FlyAnywayProgressBartext.Parent = FlyAnywayProgressBarFrame
+                    FlyBar = vape:CreateProgressBar("2.0s")
                 end
 
                 if lplr.Character and (lplr.Character:GetAttribute('InflatedBalloons') or 0) == 0 and getItem('balloon') then
                     bedwars.BalloonController:inflateBalloon()
                 end
-                
+
                 Fly:Clean(vapeEvents.AttributeChanged.Event:Connect(function(changed)
                     if changed == 'InflatedBalloons' and (lplr.Character:GetAttribute('InflatedBalloons') or 0) == 0 and getItem('balloon') then
                         bedwars.BalloonController:inflateBalloon()
                     end
                 end))
-                
+
                 Fly:Clean(runService.PreSimulation:Connect(function(dt)
                     if entitylib.isAlive and not InfiniteFly.Enabled and isnetworkowner(entitylib.character.RootPart) then
                         local flyAllowed = (lplr.Character:GetAttribute('InflatedBalloons') and lplr.Character:GetAttribute('InflatedBalloons') > 0) or store.matchState == 2
@@ -2039,18 +1996,17 @@ run(function()
                         rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
                         rayCheck.CollisionGroup = root.CollisionGroup
 
-                        if FlyTimer.Enabled and FlyAnywayProgressBarFrame then
+                        if FlyTimer.Enabled and FlyBar then
                             if not flyAllowed then
                                 local airTime = tick() - entitylib.character.AirTime
                                 local timeLeft = math.max(0, 2 - airTime)
                                 local progress = timeLeft / 2
-                                
-                                FlyAnywayProgressBarFrame2.Size = UDim2.new(progress, 0, 0, 20)
-                                FlyAnywayProgressBartext.Text = string.format("%.1fs", timeLeft)
-                                FlyAnywayProgressBarFrame2.BackgroundColor3 = Color3.new(1 - progress, progress, 0)
-                                FlyAnywayProgressBarFrame.Visible = timeLeft > 0
+                                FlyBar:SetProgress(progress)
+                                FlyBar:SetText(string.format("%.1fs", timeLeft))
+                                --FlyBar:SetFillColor(Color3.new(1 - progress, progress, 0))
+                                FlyBar:SetVisible(true)
                             else
-                                FlyAnywayProgressBarFrame.Visible = false
+                                FlyBar:SetVisible(false)
                             end
                         end
 
@@ -2093,7 +2049,7 @@ run(function()
                         root.AssemblyLinearVelocity = (moveDirection * velo) + Vector3.new(0, mass, 0)
                     end
                 end))
-                
+
                 Fly:Clean(inputService.InputBegan:Connect(function(input)
                     if not inputService:GetFocusedTextBox() then
                         if input.KeyCode == Enum.KeyCode.Space or input.KeyCode == Enum.KeyCode.ButtonA then
@@ -2103,7 +2059,7 @@ run(function()
                         end
                     end
                 end))
-                
+
                 Fly:Clean(inputService.InputEnded:Connect(function(input)
                     if input.KeyCode == Enum.KeyCode.Space or input.KeyCode == Enum.KeyCode.ButtonA then
                         up = 0
@@ -2111,7 +2067,7 @@ run(function()
                         down = 0
                     end
                 end))
-                
+
                 if inputService.TouchEnabled then
                     pcall(function()
                         local jumpButton = lplr.PlayerGui.TouchGui.TouchControlFrame.JumpButton
@@ -2127,70 +2083,53 @@ run(function()
                         bedwars.BalloonController:deflateBalloon()
                     end
                 end
-                
-                -- Clean up timer UI
-                if FlyAnywayProgressBarFrame then
-                    FlyAnywayProgressBarFrame:Destroy()
-                    FlyAnywayProgressBarFrame = nil
+
+                if FlyBar then
+                    FlyBar:Destroy()
+                    FlyBar = nil
                 end
             end
         end,
-        ExtraText = function()
-            return 'Safe'
-        end,
+        ExtraText = function() return 'Safe' end,
         Tooltip = 'Makes you go zoom.'
     })
-    
     Value = Fly:CreateSlider({
-        Name = 'Speed',
-        Min = 1,
-        Max = 23,
-        Default = 23,
-        Suffix = function(val)
-            return val == 1 and 'stud' or 'studs'
-        end
-    })
-    
-    VerticalValue = Fly:CreateSlider({
-        Name = 'Vertical Speed',
-        Min = 1,
-        Max = 150,
-        Default = 50,
-        Suffix = function(val)
-            return val == 1 and 'stud' or 'studs'
-        end
-    })
-    
-    WallCheck = Fly:CreateToggle({
-        Name = 'Wall Check',
-        Default = true
-    })
-    
-    PopBalloons = Fly:CreateToggle({
-        Name = 'Pop Balloons',
-        Default = true
-    })
-    
-    TP = Fly:CreateToggle({
-        Name = 'TP Down',
-        Default = true
-    })
-    
-    -- Add the Fly Timer toggle
+		Name = 'Speed', 
+		Min = 1, 
+		Max = 23, 
+		Default = 23 
+	})
+    VerticalValue = Fly:CreateSlider({ 
+		Name = 'Vertical Speed', 
+		Min = 1, 
+		Max = 150, 
+		Default = 50 
+	})
+    WallCheck = Fly:CreateToggle({ 
+		Name = 'Wall Check', 
+		Default = true 
+	})
+    PopBalloons = Fly:CreateToggle({ 
+		Name = 'Pop Balloons', 
+		Default = true 
+	})
+    TP = Fly:CreateToggle({ 
+		Name = 'TP Down', 
+		Default = true 
+	})
     FlyTimer = Fly:CreateToggle({
         Name = 'Fly Timer',
         Default = true,
         Function = function(callback)
-            if not callback and FlyAnywayProgressBarFrame then
-                FlyAnywayProgressBarFrame:Destroy()
-                FlyAnywayProgressBarFrame = nil
+            if not callback and FlyBar then
+                FlyBar:Destroy()
+                FlyBar = nil
             elseif callback and Fly.Enabled then
-                -- Recreate the UI if fly is already enabled
                 Fly.Function(false)
                 Fly.Function(true)
             end
         end,
-        Tooltip = 'Shows a countdown when you can TP down'
+        Tooltip = 'Shows a countdown for when you can TP down/get flagged'
     })
 end)
 	
@@ -2803,17 +2742,15 @@ run(function()
     task.spawn(function()
         projectileRemote = bedwars.Client:Get(remotes.FireProjectile).instance
     end)
-    
+
     local JumpTimer
-    local JumpProgressBarFrame
-    local JumpProgressBarFrame2
-    local JumpProgressBartext
-    
+    local JumpBar
+
     local function launchProjectile(item, pos, proj, speed, dir)
         if not pos then return end
 
         entitylib.character.RootPart.AssemblyLinearVelocity = Vector3.new(0, entitylib.character.RootPart.AssemblyLinearVelocity.Y, 0)
-        
+
         pos = pos - dir * 0.1
         local shootPosition = (CFrame.lookAlong(pos, Vector3.new(0, -speed, 0)) * CFrame.new(Vector3.new(-bedwars.BowConstantsTable.RelX, -bedwars.BowConstantsTable.RelY, -bedwars.BowConstantsTable.RelZ)))
         switchItem(item.tool, 0)
@@ -2827,15 +2764,15 @@ run(function()
             end
         end
     end
-    
+
     local LongJumpMethods = {
         cannon = function(_, pos, dir)
             entitylib.character.RootPart.AssemblyLinearVelocity = Vector3.new(0, entitylib.character.RootPart.AssemblyLinearVelocity.Y, 0)
-            
+
             pos = pos - Vector3.new(0, (entitylib.character.HipHeight + (entitylib.character.RootPart.Size.Y / 2)) - 3, 0)
             local rounded = Vector3.new(math.round(pos.X / 3) * 3, math.round(pos.Y / 3) * 3, math.round(pos.Z / 3) * 3)
             bedwars.placeBlock(rounded, 'cannon', false)
-    
+
             task.delay(0, function()
                 local block, blockpos = getPlacedBlock(rounded)
                 if block and block.Name == 'cannon' and (entitylib.character.RootPart.Position - block.Position).Magnitude < 20 then
@@ -2844,25 +2781,25 @@ run(function()
                     if tool then
                         switchItem(tool.tool)
                     end
-    
+
                     bedwars.Client:Get(remotes.CannonAim):SendToServer({
                         cannonBlockPos = blockpos,
                         lookVector = dir
                     })
-    
+
                     local broken = 0.1
                     if bedwars.BlockController:calculateBlockDamage(lplr, {blockPosition = blockpos}) < block:GetAttribute('Health') then
                         broken = 0.4
                         bedwars.breakBlock(block, true, true)
                     end
-    
+
                     task.delay(broken, function()
                         for _ = 1, 3 do
                             local call = bedwars.Client:Get(remotes.CannonLaunch):CallServer({cannonBlockPos = blockpos})
                             if call then
                                 bedwars.breakBlock(block, true, true)
                                 JumpSpeed = 5.25 * Value.Value
-                                JumpTick = tick() + 2.3
+                                JumpTick = tick() + 2.0
                                 Direction = Vector3.new(dir.X, 0, dir.Z).Unit
                                 break
                             end
@@ -2875,15 +2812,15 @@ run(function()
         cat = function(_, _, dir)
             LongJump:Clean(vapeEvents.CatPounce.Event:Connect(function()
                 JumpSpeed = 4 * Value.Value
-                JumpTick = tick() + 2.5
+                JumpTick = tick() + 2.0
                 Direction = Vector3.new(dir.X, 0, dir.Z).Unit
                 entitylib.character.RootPart.Velocity = Vector3.zero
             end))
-    
+
             if not bedwars.AbilityController:canUseAbility('CAT_POUNCE') then
                 repeat task.wait() until bedwars.AbilityController:canUseAbility('CAT_POUNCE') or not LongJump.Enabled
             end
-    
+
             if bedwars.AbilityController:canUseAbility('CAT_POUNCE') and LongJump.Enabled then
                 bedwars.AbilityController:useAbility('CAT_POUNCE')
             end
@@ -2896,34 +2833,33 @@ run(function()
         end,
         jade_hammer = function(item, _, dir)
             entitylib.character.RootPart.AssemblyLinearVelocity = Vector3.new(0, entitylib.character.RootPart.AssemblyLinearVelocity.Y, 0)
-            
+
             if not bedwars.AbilityController:canUseAbility(item.itemType..'_jump') then
                 repeat task.wait() until bedwars.AbilityController:canUseAbility(item.itemType..'_jump') or not LongJump.Enabled
             end
-    
+
             if bedwars.AbilityController:canUseAbility(item.itemType..'_jump') and LongJump.Enabled then
                 bedwars.AbilityController:useAbility(item.itemType..'_jump')
                 JumpSpeed = 1.4 * Value.Value
-                JumpTick = tick() + 2.5
+                JumpTick = tick() + 2.0
                 Direction = Vector3.new(dir.X, 0, dir.Z).Unit
             end
         end,
         tnt = function(item, pos, dir)
             entitylib.character.RootPart.AssemblyLinearVelocity = Vector3.new(0, entitylib.character.RootPart.AssemblyLinearVelocity.Y, 0)
-            
+
             pos = pos - Vector3.new(0, (entitylib.character.HipHeight + (entitylib.character.RootPart.Size.Y / 2)) - 3, 0)
             local rounded = Vector3.new(math.round(pos.X / 3) * 3, math.round(pos.Y / 3) * 3, math.round(pos.Z / 3) * 3)
             start = Vector3.new(rounded.X, start.Y, rounded.Z) + (dir * (item.itemType == 'pirate_gunpowder_barrel' and 2.6 or 0.2))
             bedwars.placeBlock(rounded, item.itemType, false)
         end,
         wood_dao = function(item, pos, dir)
-            -- Freeze character before dashing
             entitylib.character.RootPart.AssemblyLinearVelocity = Vector3.new(0, entitylib.character.RootPart.AssemblyLinearVelocity.Y, 0)
-            
+
             if (lplr.Character:GetAttribute('CanDashNext') or 0) > workspace:GetServerTimeNow() or not bedwars.AbilityController:canUseAbility('dash') then
                 repeat task.wait() until (lplr.Character:GetAttribute('CanDashNext') or 0) < workspace:GetServerTimeNow() and bedwars.AbilityController:canUseAbility('dash') or not LongJump.Enabled
             end
-    
+
             if LongJump.Enabled then
                 bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
                 switchItem(item.tool, 0.1)
@@ -2933,7 +2869,7 @@ run(function()
                     weapon = item.itemType
                 })
                 JumpSpeed = 4.5 * Value.Value
-                JumpTick = tick() + 2.4
+                JumpTick = tick() + 2.0        -- 2 seconds
                 Direction = Vector3.new(dir.X, 0, dir.Z).Unit
             end
         end
@@ -2944,7 +2880,7 @@ run(function()
     LongJumpMethods.void_axe = LongJumpMethods.jade_hammer
     LongJumpMethods.siege_tnt = LongJumpMethods.tnt
     LongJumpMethods.pirate_gunpowder_barrel = LongJumpMethods.tnt
-    
+
     LongJump = vape.Categories.Blatant:CreateModule({
         Name = 'LongJump',
         Function = function(callback)
@@ -2957,13 +2893,13 @@ run(function()
                             vertical = 0,
                             horizontal = (damageTable.knockbackMultiplier and damageTable.knockbackMultiplier.horizontal or 1)
                         }).Magnitude * 1.1
-    
+
                         if knockbackBoost >= JumpSpeed then
                             local pos = damageTable.fromPosition and Vector3.new(damageTable.fromPosition.X, damageTable.fromPosition.Y, damageTable.fromPosition.Z) or damageTable.fromEntity and damageTable.fromEntity.PrimaryPart.Position
                             if not pos then return end
                             local vec = (entitylib.character.RootPart.Position - pos)
                             JumpSpeed = knockbackBoost
-                            JumpTick = tick() + 2.5
+                            JumpTick = tick() + 2.0        -- 2 seconds
                             Direction = Vector3.new(vec.X, 0, vec.Z).Unit
                         end
                     end
@@ -2972,71 +2908,33 @@ run(function()
                     if dataTable.hookFunction == 'PLAYER_IN_TRANSIT' then
                         local vec = entitylib.character.RootPart.CFrame.LookVector
                         JumpSpeed = 2.5 * Value.Value
-                        JumpTick = tick() + 2.5
+                        JumpTick = tick() + 2.0        -- 2 seconds
                         Direction = Vector3.new(vec.X, 0, vec.Z).Unit
                     end
                 end))
 
                 if JumpTimer.Enabled then
-                    JumpProgressBarFrame = Instance.new("Frame")
-                    JumpProgressBarFrame.AnchorPoint = Vector2.new(0.5, 0)
-                    JumpProgressBarFrame.Position = UDim2.new(0.5, 0, 1, -200)
-                    JumpProgressBarFrame.Size = UDim2.new(0.2, 0, 0, 20)
-                    JumpProgressBarFrame.BackgroundTransparency = 0.5
-                    JumpProgressBarFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-                    JumpProgressBarFrame.BorderSizePixel = 5
-                    JumpProgressBarFrame.Visible = false
-                    JumpProgressBarFrame.Parent = vape.gui
-
-                    local UICorner = Instance.new("UICorner")
-                    UICorner.CornerRadius = UDim.new(0, 10) 
-                    UICorner.Parent = JumpProgressBarFrame
-
-                    JumpProgressBarFrame2 = Instance.new("Frame")
-                    JumpProgressBarFrame2.AnchorPoint = Vector2.new(0, 0)
-                    JumpProgressBarFrame2.Position = UDim2.new(0, 0, 0, 0)
-                    JumpProgressBarFrame2.Size = UDim2.new(1, 0, 0, 20)
-                    JumpProgressBarFrame2.BackgroundTransparency = 0
-                    JumpProgressBarFrame2.BackgroundColor3 = Color3.new(0, 1, 0)
-                    JumpProgressBarFrame2.BorderSizePixel = 5
-                    JumpProgressBarFrame2.Parent = JumpProgressBarFrame
-
-                    local UICorner2 = Instance.new("UICorner")
-                    UICorner2.CornerRadius = UDim.new(0, 10) 
-                    UICorner2.Parent = JumpProgressBarFrame2
-
-                    JumpProgressBartext = Instance.new("TextLabel")
-                    JumpProgressBartext.Text = "0.0s"
-                    JumpProgressBartext.Font = Enum.Font.Gotham
-                    JumpProgressBartext.TextStrokeTransparency = 0
-                    JumpProgressBartext.TextColor3 = Color3.new(0.9, 0.9, 0.9)
-                    JumpProgressBartext.TextSize = 20
-                    JumpProgressBartext.Size = UDim2.new(1, 0, 1, 0)
-                    JumpProgressBartext.BackgroundTransparency = 1
-                    JumpProgressBartext.Position = UDim2.new(0, 0, -1, 0)
-                    JumpProgressBartext.Parent = JumpProgressBarFrame
+                    JumpBar = vape:CreateProgressBar("0.0s")
                 end
-    
+
                 start = entitylib.isAlive and entitylib.character.RootPart.Position or nil
                 LongJump:Clean(runService.PreSimulation:Connect(function(dt)
                     local root = entitylib.isAlive and entitylib.character.RootPart or nil
-    
+
                     if root and isnetworkowner(root) then
                         local timeLeft = JumpTick - tick()
-                        if JumpTimer.Enabled and JumpProgressBarFrame and timeLeft > 0.3 then
-                            local totalTime = 2.5
+                        if JumpTimer.Enabled and JumpBar and timeLeft > 0.5 then
+                            local totalTime = 2.0
                             local progress = timeLeft / totalTime
-    
-                            JumpProgressBarFrame2.Size = UDim2.new(progress, 0, 0, 20)
-                            JumpProgressBartext.Text = string.format("%.1fs", timeLeft)
-                            JumpProgressBarFrame2.BackgroundColor3 = Color3.new(1 - progress, progress, 0)
-                            JumpProgressBarFrame.Visible = true
+                            JumpBar:SetProgress(progress)
+                            JumpBar:SetText(string.format("%.1fs", timeLeft))
+                            JumpBar:SetVisible(true)
                         else
-                            if JumpProgressBarFrame then
-                                JumpProgressBarFrame.Visible = false
+                            if JumpBar then
+                                JumpBar:SetVisible(false)
                             end
                         end
-    
+
                         if timeLeft > 0.3 then
                             root.AssemblyLinearVelocity = Direction * (getSpeed() + ((timeLeft) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
                             if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and not start then
@@ -3059,13 +2957,13 @@ run(function()
                         start = nil
                     end
                 end))
-    
+
                 local equippedTool = store.hand and store.hand.tool
                 if equippedTool and LongJumpMethods[equippedTool.Name] then
                     task.spawn(LongJumpMethods[equippedTool.Name], getItem(equippedTool.Name), start, (CameraDir.Enabled and gameCamera or entitylib.character.RootPart).CFrame.LookVector)
                     return
                 end
-    
+
                 for i, v in LongJumpMethods do
                     local item = getItem(i)
                     if item or store.equippedKit == i then
@@ -3077,9 +2975,9 @@ run(function()
                 JumpTick = tick()
                 Direction = nil
                 JumpSpeed = 0
-                if JumpProgressBarFrame then
-                    JumpProgressBarFrame:Destroy()
-                    JumpProgressBarFrame = nil
+                if JumpBar then
+                    JumpBar:Destroy()
+                    JumpBar = nil
                 end
             end
         end,
@@ -3104,9 +3002,9 @@ run(function()
         Name = 'Timer',
         Default = true,
         Function = function(callback)
-            if not callback and JumpProgressBarFrame then
-                JumpProgressBarFrame:Destroy()
-                JumpProgressBarFrame = nil
+            if not callback and JumpBar then
+                JumpBar:Destroy()
+                JumpBar = nil
             elseif callback and LongJump.Enabled then
                 LongJump:Toggle()
             end
