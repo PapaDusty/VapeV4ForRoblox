@@ -1,5 +1,4 @@
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
---This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func)
 	func()
 end
@@ -1457,7 +1456,7 @@ run(function()
 		end
 		oldroot.Transparency = 1
 		oldroot = nil
-		entitylib.character.RootPart.CFrame = oldcf + Vector3.new(0, 12, 0)
+		entitylib.character.RootPart.CFrame = oldcf + Vector3.new(0, 3, 0)
 		task.spawn(function()
 			for i = 1, 12 do
 				entitylib.character.RootPart.Velocity = Vector3.zero
@@ -12133,7 +12132,7 @@ run(function()
 
 					if Mode.Value == 'Always' then
 						shouldActivate = true
-					elseif Mode.Value == 'In Combat' then
+					elseif Mode.Value == 'Combat Only' then
 						local enemies = entitylib.AllPosition({
 							Range = EnemyRange.Value,
 							Part = 'RootPart',
