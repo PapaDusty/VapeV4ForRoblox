@@ -1,4 +1,6 @@
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func)
 	func()
 end
@@ -1213,7 +1215,7 @@ run(function()
 	end)
 end)
 
-for _, v in {'AntiRagdoll', 'TriggerBot', 'SilentAim', 'AutoRejoin', 'Rejoin', 'Disabler', 'Timer', 'ServerHop', 'MouseTP', 'MurderMystery', 'Swim', 'SpinBot', 'Phase', 'PlayerModel', 'Blink', 'GamingChair', 'Anti-AFK'} do
+for _, v in {'AntiRagdoll', 'TriggerBot', 'SilentAim', 'AutoRejoin', 'Rejoin', 'Disabler', 'Timer', 'ServerHop', 'MouseTP', 'MurderMystery', 'Swim', 'SpinBot', 'Phase', 'PlayerModel', 'Blink', 'GamingChair'} do
 	vape:Remove(v)
 end
 run(function()
@@ -2989,8 +2991,8 @@ run(function()
     Value = LongJump:CreateSlider({
         Name = 'Speed',
         Min = 1,
-        Max = 45,
-        Default = 45,
+        Max = 60,
+        Default = 60,
         Suffix = function(val)
             return val == 1 and 'stud' or 'studs'
         end
@@ -3275,7 +3277,7 @@ run(function()
 		Function = function(callback)
 			if callback then
 				repeat
-					if (workspace:GetServerTimeNow() - bedwars.SwordController.lastAttack) > 0.5 then
+					if (workspace:GetServerTimeNow() - bedwars.SwordController.lastAttack) > Delay.Value then
 						local ent = entitylib.EntityPosition({
 							Part = 'RootPart',
 							Range = Range.Value,
@@ -3322,7 +3324,7 @@ run(function()
 							end
 						end
 					end
-					task.wait(0.1)
+					task.wait(0.05)
 				until not ProjectileAura.Enabled
 			end
 		end,
@@ -3343,10 +3345,18 @@ run(function()
 		Name = 'Range',
 		Min = 1,
 		Max = 150,
-		Default = 65,
+		Default = 90,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
+	})
+	Delay = ProjectileAura:CreateSlider({
+		Name = 'Delay After Attack',
+		Min = 0.01,
+		Max = 0.5,
+		Default = 0.25,
+		Decimal = 100,
+		Function = function() end
 	})
 end)
 	
@@ -8222,184 +8232,6 @@ run(function()
 	end)
 end)
 
-
-
-
-
-
-
-
-pcall(function()
-    local StaffRadar = {Enabled = true}
-    run(function()
-        local TeleportService = game:GetService('TeleportService')
-        local PlayersService = game:GetService("Players")
-        
-        local StaffRadarConfig = {
-            Connections = {},
-            Blacklist = {
-                Users = {
-                    "chasemaser", "OrionYeets", "lIllllllllllIllIIlll", "AUW345678",
-                    "GhostWxstaken", "throughthewindow009", "YT_GoraPlays",
-                    "IllIIIIlllIlllIlIIII", "celisnix", "7SlyR", "DoordashRP",
-                    "IlIIIIIlIIIIIIIllI", "lIIlIlIllllllIIlI", "IllIIIIIIlllllIIlIlI",
-                    "asapzyzz", "WhyZev", "sworduserpro332", "Muscular_Gorilla",
-                    "Typhoon_Kang", "PineappleSnackz"
-                },
-                GroupRanks = {
-                    [79029254] = "Anticheat MOD",
-                    [86172137] = "Lead AC MOD",
-                    [43926962] = "Developer",
-                    [37929139] = "Developer",
-                    [87049509] = "Owner",
-                    [37929138] = "Owner"
-                }
-            },
-            Actions = {
-                Current = "Notify",
-                Options = {
-                    Uninject = function()
-                        shared.restore_function(shared.vape)
-                    end,
-                    Panic = function()
-                        task.spawn(function()
-                            if shared.saveSettingsLoop then
-                                coroutine.close(shared.saveSettingsLoop) 
-                            end
-                        end)
-                        GuiLibrary:Save()
-                        GuiLibrary.Save = function() end
-                        GuiLibrary.Save = function()
-                            warningNotification("StaffRadar", "Saving settings blocked by Panic mode...", 1.5)
-                        end
-                        warningNotification("StaffRadar", "Panic mode activated! Saving settings mode disabled.", 1.5)
-                        task.spawn(function()
-                            repeat task.wait() until GuiLibrary.Modules.Panic
-                            GuiLibrary.Modules.Panic:Toggle()
-                        end)
-                    end,
-                    Lobby = function()
-                        TeleportService:Teleport(6872265039)
-                    end,
-                    Notify = function() end
-                }
-            },
-            LeaveParty = {Enabled = false} -- Removed JoinNotifier since it's redundant
-        }
-
-        local function notifyStaff(checktype, plr)
-            warningNotification("StaffRadar", 'Staff Detected ('..checktype..'): '..plr.Name..' ('..plr.UserId..')', 60)
-        end
-
-        local function triggerAction(player, detectionType)
-            notifyStaff(detectionType, player)
-            
-            if StaffRadarConfig.LeaveParty.Enabled then
-                game:GetService("ReplicatedStorage"):WaitForChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events"):WaitForChild("leaveParty"):FireServer()
-            end
-            
-            if StaffRadarConfig.Actions.Current ~= "Notify" then
-                StaffRadarConfig.Actions.Options[StaffRadarConfig.Actions.Current]()
-            end
-        end
-
-        local DetectionMethods = {
-            checkBlacklist = function(player)
-                if table.find(StaffRadarConfig.Blacklist.Users, player.Name) then
-                    triggerAction(player, "Blacklist")
-                end
-            end,
-
-            checkGroupRank = function(player)
-                local success, rank = pcall(function() return player:GetRankInGroup(5774246) end)
-                rank = success and rank or 0
-                
-                local rankInfo = StaffRadarConfig.Blacklist.GroupRanks[rank]
-                if rankInfo then
-                    triggerAction(player, "GroupRank")
-                end
-            end,
-
-            checkPermissions = function(player)
-                local success, KnitClient = pcall(function()
-                    return debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 6)
-                end)
-                
-                if success then
-                    local permissionController
-                    repeat
-                        permissionController = KnitClient.Controllers.PermissionController
-                        task.wait()
-                    until permissionController
-                    
-                    if permissionController:isStaffMember(player) then
-                        triggerAction(player, "Permissions")
-                    end
-                end
-            end,
-
-            scanPlayer = function(player)
-                if player == PlayersService.LocalPlayer then return end
-                task.spawn(function() pcall(DetectionMethods.checkBlacklist, player) end)
-                task.spawn(function() pcall(DetectionMethods.checkGroupRank, player) end)
-                task.spawn(function() pcall(DetectionMethods.checkPermissions, player) end)
-            end
-        }
-
-        StaffRadar = vape.Categories.Utility:CreateModule({
-            Name = "StaffRadar",
-            Function = function(enabled)
-                StaffRadar.Enabled = enabled
-                if enabled then
-                    for _, player in pairs(PlayersService:GetPlayers()) do
-                        DetectionMethods.scanPlayer(player)
-                    end
-                    
-                    local connection = PlayersService.PlayerAdded:Connect(function(player)
-                        if StaffRadar.Enabled then
-                            DetectionMethods.scanPlayer(player)
-                        end
-                    end)
-                    table.insert(StaffRadarConfig.Connections, connection)
-                else
-                    for _, conn in pairs(StaffRadarConfig.Connections) do
-                        pcall(function() conn:Disconnect() end)
-                    end
-                    table.clear(StaffRadarConfig.Connections)
-                end
-            end,
-            ExtraText = function()
-                return StaffRadarConfig.Actions.Current
-            end,
-			Tooltip = 'Basically just StaffDetector with more specific staff detection methods.',
-            Default = true
-        })
-
-        local actionList = {"Uninject", "Panic", "Lobby", "Notify"}
-        StaffRadarConfig.Actions.Dropdown = StaffRadar:CreateDropdown({
-            Name = 'Mode',
-            List = actionList,
-            Function = function(value)
-                StaffRadarConfig.Actions.Current = value
-            end,
-            Default = "Notify"
-        })
-        StaffRadarConfig.LeaveParty = StaffRadar:CreateToggle({
-            Name = "Auto Leave Party",
-            Function = function(enabled)
-                StaffRadarConfig.LeaveParty.Enabled = enabled
-            end,
-            Default = true
-        })
-    end)
-end)
-
-
-
-
-
-
-	
 run(function()
 	TrapDisabler = vape.Categories.Utility:CreateModule({
 		Name = 'TrapDisabler',
@@ -8480,7 +8312,6 @@ end)
 	
 run(function()
     local AntiSuffocate
-    local AntiSuffMode
 
     local function isSuffocating()
         local character = entitylib.character
@@ -8511,13 +8342,7 @@ run(function()
             local block = getPlacedBlock(blockPos)
             
             if block then
-                if AntiSuffMode.Value == "Phase" then
-                    local moveDir = (character.RootPart.Position - blockPos).Unit
-                    character.RootPart.Velocity = moveDir * 50
-					character.RootPart.Velocity = character.RootPart.Velocity + Vector3.new(0, 3, 0)
-                elseif AntiSuffMode.Value == "Teleport" then
-                    character.RootPart.CFrame = character.RootPart.CFrame + Vector3.new(0, 3, 0)
-                end
+                character.RootPart.CFrame = character.RootPart.CFrame + Vector3.new(0, 3, 0)
             end
         end
     end
@@ -8533,14 +8358,7 @@ run(function()
                 end))
             end
         end,
-        Tooltip = 'Prevents you from being suffocated by blocks.'
-    })
-    
-    AntiSuffMode = AntiSuffocate:CreateDropdown({
-        Name = 'Mode',
-        List = {'Phase', 'Teleport'},
-        Default = 'Teleport',
-        Tooltip = 'Phase: Pushes you out the way.\nTeleport: Teleports you above the blocks.'
+        Tooltip = 'Prevents you from being suffocated.'
     })
 end)
 
