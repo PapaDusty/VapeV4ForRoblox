@@ -1,4 +1,3 @@
---This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func)
 	func()
 end
@@ -683,6 +682,7 @@ run(function()
         DefaultKillEffect = require(lplr.PlayerScripts.TS.controllers.global.locker['kill-effect'].effects['default-kill-effect']),      
 		EmoteType = require(replicatedStorage.TS.locker.emote['emote-type']).EmoteType,
 		GameAnimationUtil = require(replicatedStorage.TS.animation['animation-util']).GameAnimationUtil,
+		--TridentAnchor = require(replicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.TridentUnanchor),
 		getIcon = function(item, showinv)
 			local itemmeta = bedwars.ItemMeta[item.itemType]
 			return itemmeta and showinv and itemmeta.image or ''
@@ -757,7 +757,7 @@ run(function()
 		ResetCharacter = debug.getproto(Knit.Controllers.ResetController.createBindable, 1),
 		SpawnRaven = debug.getproto(Knit.Controllers.RavenController.KnitStart, 1),
 		SummonerClawAttack = Knit.Controllers.SummonerClawHandController.attack,
-		WarlockTarget = debug.getproto(Knit.Controllers.WarlockStaffController.KnitStart, 2)
+		WarlockTarget = debug.getproto(Knit.Controllers.WarlockStaffController.KnitStart, 2),
 	}
 
 
@@ -3305,6 +3305,7 @@ run(function()
 											if not res then
 												FireDelays[item.itemType] = tick()
 											else
+												res.Parent = replicatedStorage
 												local shoot = itemMeta.launchSound
 												shoot = shoot and shoot[math.random(1, #shoot)] or nil
 												if shoot then
@@ -7215,11 +7216,15 @@ run(function()
 			end, 10, false)
 		end,
 		fisherman = function()
+			local fisherman = replicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.PullFishingRod
+			if not fisherman then return end
+
 			local old = bedwars.FishingMinigameController.startMinigame
 			bedwars.FishingMinigameController.startMinigame = function(_, _, result)
+				fisherman:FireServer({success = true})
 				result({win = true})
 			end
-	
+
 			AutoKit:Clean(function()
 				bedwars.FishingMinigameController.startMinigame = old
 			end)
@@ -7861,7 +7866,9 @@ run(function()
 	local LimitItem
 	local Mouse
 	local adjacent, lastpos, label = {}, Vector3.zero
-	
+	local blockCountFrame = nil
+	local blockCountStroke = nil   
+
 	for x = -3, 3, 3 do
 		for y = -3, 3, 3 do
 			for z = -3, 3, 3 do
@@ -7872,14 +7879,14 @@ run(function()
 			end
 		end
 	end
-	
+
 	local function nearCorner(poscheck, pos)
 		local startpos = poscheck - Vector3.new(3, 3, 3)
 		local endpos = poscheck + Vector3.new(3, 3, 3)
 		local check = poscheck + (pos - poscheck).Unit * 100
 		return Vector3.new(math.clamp(check.X, startpos.X, endpos.X), math.clamp(check.Y, startpos.Y, endpos.Y), math.clamp(check.Z, startpos.Z, endpos.Z))
 	end
-	
+
 	local function blockProximity(pos)
 		local mag, returned = 60
 		local tab = getBlocksInPoints(bedwars.BlockController:getBlockPosition(pos - Vector3.new(21, 21, 21)), bedwars.BlockController:getBlockPosition(pos + Vector3.new(21, 21, 21)))
@@ -7893,7 +7900,7 @@ run(function()
 		table.clear(tab)
 		return returned
 	end
-	
+
 	local function checkAdjacent(pos)
 		for _, v in adjacent do
 			if getPlacedBlock(pos + v) then
@@ -7902,7 +7909,7 @@ run(function()
 		end
 		return false
 	end
-	
+
 	local function getScaffoldBlock()
 		if store.hand.toolType == 'block' then
 			return store.hand.tool.Name, store.hand.amount
@@ -7918,40 +7925,42 @@ run(function()
 				end
 			end
 		end
-	
 		return nil, 0
 	end
-	
+
 	Scaffold = vape.Categories.Utility:CreateModule({
 		Name = 'Scaffold',
 		Function = function(callback)
 			if label then
 				label.Visible = callback
 			end
-	
+
+			if blockCountFrame then
+				blockCountFrame.Visible = callback
+			end
+
 			if callback then
 				repeat
 					if entitylib.isAlive then
 						local wool, amount = getScaffoldBlock()
-	
+
 						if Mouse.Enabled then
 							if not inputService:IsMouseButtonPressed(0) then
 								wool = nil
 							end
 						end
-	
+
 						if label then
 							amount = amount or 0
-							label.Text = amount..' <font color="rgb(170, 170, 170)">(Scaffold)</font>'
-							label.TextColor3 = Color3.fromHSV((amount / 128) / 2.8, 0.86, 1)
+							label.Text = tostring(amount)   -- only the number
 						end
-	
+
 						if wool then
 							local root = entitylib.character.RootPart
 							if Tower.Enabled and inputService:IsKeyDown(Enum.KeyCode.Space) and (not inputService:GetFocusedTextBox()) then
 								root.Velocity = Vector3.new(root.Velocity.X, 38, root.Velocity.Z)
 							end
-	
+
 							for i = Expand.Value, 1, -1 do
 								local currentpos = roundPos(root.Position - Vector3.new(0, entitylib.character.HipHeight + (Downwards.Enabled and inputService:IsKeyDown(Enum.KeyCode.LeftShift) and 4.5 or 1.5), 0) + entitylib.character.Humanoid.MoveDirection * (i * 3))
 								if Diagonal.Enabled then
@@ -7962,7 +7971,7 @@ run(function()
 										end
 									end
 								end
-	
+
 								local block, blockpos = getPlacedBlock(currentpos)
 								if not block then
 									blockpos = checkAdjacent(blockpos * 3) and blockpos * 3 or blockProximity(currentpos)
@@ -7974,7 +7983,6 @@ run(function()
 							end
 						end
 					end
-	
 					task.wait(0.03)
 				until not Scaffold.Enabled
 			else
@@ -7983,6 +7991,7 @@ run(function()
 		end,
 		Tooltip = 'Helps you make bridges/scaffold walk.'
 	})
+
 	Expand = Scaffold:CreateSlider({
 		Name = 'Expand',
 		Min = 1,
@@ -8006,24 +8015,129 @@ run(function()
 		Name = 'Block Count',
 		Function = function(callback)
 			if callback then
-				label = Instance.new('TextLabel')
-				label.Size = UDim2.fromOffset(100, 20)
-				label.Position = UDim2.new(0.5, 6, 0.5, 60)
-				label.BackgroundTransparency = 1
-				label.AnchorPoint = Vector2.new(0.5, 0)
-				label.Text = '0'
-				label.TextColor3 = Color3.new(0, 1, 0)
-				label.TextSize = 18
-				label.RichText = true
-				label.Font = Enum.Font.Arial
-				label.Visible = Scaffold.Enabled
-				label.Parent = vape.gui
+				local gui = Instance.new("ScreenGui")
+				gui.Name = "ScaffoldBlockCount"
+				gui.Parent = vape.gui
+
+				local frame = Instance.new("Frame")
+				frame.Name = "BlockCountFrame"
+				frame.Size = UDim2.fromOffset(50, 20)
+				frame.Position = UDim2.new(0.5, 6, 0.5, 60)
+				frame.BackgroundColor3 = Color3.fromRGB(13, 10, 28)
+				frame.BackgroundTransparency = 0.8
+				frame.BorderSizePixel = 0
+				frame.AnchorPoint = Vector2.new(0.5, 0)
+				frame.Active = true
+				frame.Draggable = true
+				frame.Parent = gui
+
+				local corner = Instance.new("UICorner")
+				corner.CornerRadius = UDim.new(0, 3)
+				corner.Parent = frame
+
+				local stroke = Instance.new("UIStroke")
+				stroke.Color = Color3.fromHSV(OutlineColor.Hue, OutlineColor.Sat, OutlineColor.Value)
+				stroke.Thickness = 1.5
+				stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+				stroke.Transparency = 1 - OutlineColor.Opacity
+				stroke.Parent = frame
+				blockCountStroke = stroke
+
+				local textLabel = Instance.new("TextLabel")
+				textLabel.Name = "BlockCount"
+				textLabel.Parent = frame
+				textLabel.BackgroundTransparency = 1
+				textLabel.Position = UDim2.fromOffset(4, 2)
+				textLabel.Size = UDim2.fromOffset(0, 0)
+				textLabel.Font = Enum.Font.GothamMedium
+				textLabel.Text = "0"
+				textLabel.TextColor3 = Color3.fromHSV(TextColor.Hue, TextColor.Sat, TextColor.Value)
+				textLabel.TextSize = 18
+				textLabel.RichText = false
+				textLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+				label = textLabel
+				blockCountFrame = frame
+
+				local function resizeFrame()
+					local textBounds = getfontsize(
+						textLabel.Text,
+						textLabel.TextSize,
+						textLabel.Font,
+						Vector2.new(1000, 1000)
+					)
+					local paddingX = 8
+					local paddingY = 4
+					local newWidth = textBounds.X + paddingX
+					local newHeight = textBounds.Y + paddingY
+
+					frame.Size = UDim2.fromOffset(newWidth, newHeight)
+					textLabel.Size = UDim2.fromOffset(textBounds.X, textBounds.Y)
+				end
+
+				textLabel:GetPropertyChangedSignal("Text"):Connect(resizeFrame)
+				resizeFrame()
+
+				frame.Visible = Scaffold.Enabled
+
+				vape:Clean(function()
+					if gui and gui.Parent then
+						gui:Destroy()
+					end
+					blockCountFrame = nil
+					blockCountStroke = nil
+					label = nil
+				end)
+			            OutlineColor.Object.Visible = true
+            TextColor.Object.Visible = true
+
+            vape:Clean(function()
+                if blockCountFrame then
+                    blockCountFrame.Parent:Destroy()
+                    blockCountFrame = nil
+                    blockCountStroke = nil
+                    label = nil
+                end
+            end)
 			else
-				label:Destroy()
-				label = nil
+				if blockCountFrame then
+					blockCountFrame.Parent:Destroy()
+					blockCountFrame = nil
+					blockCountStroke = nil
+					label = nil
+					OutlineColor.Object.Visible = false
+         		    TextColor.Object.Visible = false
+				end
 			end
 		end
 	})
+	OutlineColor = Scaffold:CreateColorSlider({
+  	    Name = 'Outline Color',
+        DefaultHue = 0,
+        DefaultSat = 0,
+        DefaultValue = 0.5,
+        DefaultOpacity = 1,
+        Visible = false,   -- ← add this
+        Function = function(hue, sat, val, opacity)
+            if blockCountStroke then
+                blockCountStroke.Color = Color3.fromHSV(hue, sat, val)
+                blockCountStroke.Transparency = 1 - opacity
+            end
+        end
+    })
+    TextColor = Scaffold:CreateColorSlider({
+        Name = 'Text Color',
+        DefaultHue = 0,
+        DefaultSat = 0,
+        DefaultValue = 0.737,
+        DefaultOpacity = 1,
+        Visible = false,   -- ← add this
+        Function = function(hue, sat, val, opacity)
+            if label then
+                label.TextColor3 = Color3.fromHSV(hue, sat, val)
+            end
+        end
+    })
 end)
 	
 run(function()
@@ -9115,10 +9229,22 @@ run(function()
 			if ShieldPotion.Enabled and (not attribute or attribute:find('Shield')) then
 				if (lplr.Character:GetAttribute('Shield_POTION') or 0) == 0 then
 					local shield = getItem('big_shield') or getItem('mini_shield')
-	
+
 					if shield then
 						bedwars.Client:Get(remotes.ConsumeItem):CallServerAsync({
 							item = shield.tool
+						})
+					end
+				end
+			end
+
+			if SmokeBomb.Enabled then
+				if (lplr.Character:GetAttribute('smoke_bomb') or 0) == 0 then
+					local smokebomb = getItem('smoke_bomb')
+	
+					if smokebomb then
+						bedwars.Client:Get(remotes.ConsumeItem):CallServerAsync({
+							item = smokebomb.tool
 						})
 					end
 				end
@@ -9158,6 +9284,10 @@ run(function()
 	})
 	ShieldPotion = AutoConsume:CreateToggle({
 		Name = 'Shield Potions',
+		Default = true
+	})
+	SmokeBomb = AutoConsume:CreateToggle({
+		Name = 'Smoke Bomb',
 		Default = true
 	})
 end)
@@ -11982,4 +12112,106 @@ run(function()
 		Darker = true,
 		Visible = false
 	})
+end)
+
+run(function()
+	TridentAnchor = vape.Categories.World:CreateModule({
+		Name = 'TridentAnchor',
+		Function = function(callback)
+			if callback then
+				local remote = replicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.TridentUnanchor
+				if not remote then
+					notif('TridentAnchor', 'Remote not found', 5, 'alert')
+					TridentAnchor:Toggle()
+					return
+				end
+
+				repeat
+					task.spawn(function()
+						pcall(function()
+							remote:InvokeServer()
+						end)
+					end)
+					task.wait(0.01)
+				until not TridentAnchor.Enabled
+			end
+		end,
+		Tooltip = 'Automatically invokes TridentUnanchor remote every 0.01 seconds'
+	})
+end)
+
+run(function()
+    local Clutch
+    local PlaceDelay
+    local LimitItem
+
+    local adjacent = {}
+    for x = -3, 3, 3 do
+        for y = -3, 3, 3 do
+            for z = -3, 3, 3 do
+                local vec = Vector3.new(x, y, z)
+                if vec ~= Vector3.zero then
+                    table.insert(adjacent, vec)
+                end
+            end
+        end
+    end
+
+    local function checkAdjacent(pos)
+        for _, dir in ipairs(adjacent) do
+            if getPlacedBlock(pos + dir) then
+                return true
+            end
+        end
+        return false
+    end
+
+    Clutch = vape.Categories.Blatant:CreateModule({
+        Name = 'Clutch',
+        Function = function(callback)
+            if callback then
+                repeat
+                    task.wait(0.05)
+                    if not Clutch.Enabled then break end
+
+                    if entitylib.isAlive then
+                        local root = entitylib.character.RootPart
+                        local velY = root.Velocity.Y
+
+                        local ray = workspace:Raycast(root.Position, Vector3.new(0, -1000, 0))
+                        local isVoid = not ray
+
+                        if isVoid or velY < -80 then
+                            local blockItem
+                            if LimitItem.Enabled then
+                                blockItem = store.hand.toolType == 'block' and store.hand.tool or nil
+                            else
+                                for _, item in store.inventory.inventory.items do
+                                    if bedwars.ItemMeta[item.itemType].block then
+                                        blockItem = item.tool
+                                        break
+                                    end
+                                end
+                            end
+
+                            if blockItem then
+                                local placePos = roundPos(root.Position - Vector3.new(0, entitylib.character.HipHeight + 1.5, 0))
+                                if (placePos - root.Position).Magnitude <= 30
+                                    and not getPlacedBlock(placePos)
+                                    and checkAdjacent(placePos) then
+                                    task.spawn(bedwars.placeBlock, placePos, blockItem.Name)
+                                end
+                            end
+                        end
+                    end
+                until not Clutch.Enabled
+            end
+        end,
+        Tooltip = 'Automatically places a block under you when falling into the void or from high places.'
+    })
+    LimitItem = Clutch:CreateToggle({
+        Name = 'Limit to held block',
+        Default = true,
+        Tooltip = 'Only clutch while holding a block.'
+    })
 end)
