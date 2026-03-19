@@ -1,3 +1,4 @@
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func)
 	func()
 end
@@ -1401,7 +1402,7 @@ end)
 
 
 
-
+--[[
 run(function()
 	local antihit = nil :: table
 	local antihitrange = nil :: table
@@ -1583,9 +1584,253 @@ run(function()
 		Max = 2,
 		Default = 0.2
 	})
+end)]]
+
+run(function()
+	local antihit = nil :: table
+	local antihitrange = nil :: table
+	local antihitairtime = nil :: table
+	local antihitsettings = nil :: table
+	local antihitgroundtime = nil :: table
+	local antihitautoair = nil :: table
+	local visualizerToggle = nil :: table
+
+	local oldroot
+	local clone
+	local visualizerPart = nil
+
+	-- Check if a world position is inside an empty block (no solid block)
+	local function isPositionSafe(worldPos)
+		-- Block containing the position
+		if getPlacedBlock(worldPos) then return false end
+		-- Block above (head level)
+		if getPlacedBlock(worldPos + Vector3.new(0, 3, 0)) then return false end
+		return true
+	end
+
+	-- Find a safe upward offset between minOffset and maxOffset
+	local function getSafeUpOffset(currentPos, minOffset, maxOffset)
+		local attempts = 20
+		for _ = 1, attempts do
+			local offset = math.random(minOffset, maxOffset)  -- random integer offset
+			local targetPos = currentPos + Vector3.new(0, offset, 0)
+			if isPositionSafe(targetPos) then
+				return offset
+			end
+		end
+		return nil  -- no safe offset found
+	end
+
+	local function createClone()
+		if entitylib.isAlive and entitylib.character.Humanoid.Health > 0 and (not oldroot or not oldroot.Parent) then
+			hip = entitylib.character.Humanoid.HipHeight
+			oldroot = entitylib.character.HumanoidRootPart
+			if not lplr.Character.Parent then return false end
+			lplr.Character.Parent = game
+			clone = oldroot:Clone()
+			clone.Parent = lplr.Character
+			oldroot.Parent = gameCamera
+			bedwars.QueryUtil:setQueryIgnored(oldroot, true)
+			lplr.Character.PrimaryPart = clone
+			lplr.Character.Parent = workspace
+			for _, v in lplr.Character:GetDescendants() do
+				if v:IsA('Weld') or v:IsA('Motor6D') then
+					if v.Part0 == oldroot then v.Part0 = clone end
+					if v.Part1 == oldroot then v.Part1 = clone end
+				end
+			end
+
+			-- Visualizer (shows actual character location)
+			if visualizerToggle and visualizerToggle.Enabled and oldroot then
+				visualizerPart = Instance.new("Part")
+				visualizerPart.Size = Vector3.new(4, 4, 4)
+				visualizerPart.Transparency = 0.7
+				visualizerPart.BrickColor = BrickColor.new("Bright red")
+				visualizerPart.Material = Enum.Material.ForceField
+				visualizerPart.Anchored = true
+				visualizerPart.CanCollide = false
+				visualizerPart.CanQuery = false
+				visualizerPart.Parent = workspace
+
+				local billboard = Instance.new("BillboardGui")
+				billboard.Size = UDim2.fromOffset(100, 30)
+				billboard.StudsOffset = Vector3.new(0, 3, 0)
+				billboard.AlwaysOnTop = true
+				billboard.Parent = visualizerPart
+
+				local text = Instance.new("TextLabel")
+				text.Size = UDim2.new(1, 0, 1, 0)
+				text.BackgroundTransparency = 1
+				text.Text = "ACTUAL"
+				text.TextColor3 = Color3.new(1, 0, 0)
+				text.TextScaled = true
+				text.Font = Enum.Font.GothamBold
+				text.Parent = billboard
+
+				local heartbeat
+				heartbeat = runService.Heartbeat:Connect(function()
+					if oldroot and oldroot.Parent and visualizerPart then
+						visualizerPart.CFrame = oldroot.CFrame
+					else
+						if heartbeat then heartbeat:Disconnect() end
+					end
+				end)
+				antihit:Clean(heartbeat)
+			end
+
+			return true
+		end
+		return false
+	end
+
+	local function destroyClone()
+		if visualizerPart then
+			visualizerPart:Destroy()
+			visualizerPart = nil
+		end
+		if not oldroot or not oldroot.Parent or not entitylib.isAlive then return false end
+		lplr.Character.Parent = game
+		oldroot.Parent = lplr.Character
+		lplr.Character.PrimaryPart = oldroot
+		lplr.Character.Parent = workspace
+		oldroot.CanCollide = true
+		for _, v in lplr.Character:GetDescendants() do
+			if v:IsA('Weld') or v:IsA('Motor6D') then
+				if v.Part0 == clone then v.Part0 = oldroot end
+				if v.Part1 == clone then v.Part1 = oldroot end
+			end
+		end
+		local oldcf = clone.CFrame
+		if clone then
+			clone:Destroy()
+			clone = nil
+		end
+		oldroot.Transparency = 1
+		oldroot = nil
+		entitylib.character.RootPart.CFrame = oldcf + Vector3.new(0, 3, 0)
+		task.spawn(function()
+			for i = 1, 12 do
+				entitylib.character.RootPart.Velocity = Vector3.zero
+				task.wait()
+			end
+		end)
+		entitylib.character.Humanoid.HipHeight = 2
+	end
+
+	local rayCheck = RaycastParams.new()
+	local tpbackup = false
+	local lastantihitting = nil
+	local projectileHitting = false
+
+	antihit = vape.Categories.Blatant:CreateModule({
+		Name = 'AntiHit',
+		Function = function(call)
+			if call then
+				antihit:Clean(runService.PreSimulation:Connect(function()
+					if entitylib.isAlive and not flylanding then
+						local cf = clone and clone.Parent and {clone.CFrame:GetComponents()} or {entitylib.character.HumanoidRootPart.CFrame:GetComponents()}
+						if store.KillauraTarget and not antihitting then
+							cf[2] = store.KillauraTarget.Character.PrimaryPart.CFrame.Y
+						end
+						if oldroot and oldroot.Parent then
+							oldroot.CFrame = antihitting and (tick() - entitylib.character.AirTime) < 2 and CFrame.new(clone.CFrame.X, oldroot.CFrame.Y, clone.CFrame.Z) or CFrame.new(unpack(cf)) + Vector3.new(0, 6, 0)
+							if not antihitting and lastantihitting then
+								lastantihitting = antihitting
+								for i = 1, 4 do
+									oldroot.Velocity = Vector3.zero
+									task.wait()
+								end
+							else
+								lastantihitting = antihitting
+							end
+						end
+					end
+				end))
+				repeat
+					if store.matchState == 0 or not entitylib.isAlive or flylanding then task.wait() continue end
+					rayCheck.FilterDescendantsInstances = {lplr.Character, store.antifallpart}
+					local plr = entitylib.AllPosition({
+						Range = antihitrange.Value,
+						Part = 'RootPart',
+						Players = antihitsettings.Players.Enabled,
+						NPCs = antihitsettings.NPCs.Enabled,
+						Limit = 1
+					})[1]
+					if entitylib.character.AirTime and plr and (tick() - entitylib.character.AirTime) < 2 or projectileHitting then
+						createClone()
+						if tpbackup then
+							tpbackup = false
+						else
+							tpbackup = true
+						end
+						antihitting = not tpbackup
+						projectileHitting = false
+						if not tpbackup then
+							-- Teleport up 50–80 studs into empty space
+							local currentPos = oldroot.Position
+							local safeOffset = getSafeUpOffset(currentPos, 50, 80)
+							if safeOffset then
+								oldroot.CFrame += Vector3.new(0, safeOffset, 0)
+							else
+								notif('AntiHit', 'Suffocation possible, Canceling TP', 3, 'warning')
+								-- No teleport; keep oldroot where it is
+							end
+						end
+					else
+						antihitting = false
+						destroyClone()
+					end
+					local delayv = antihitautoair.Enabled and (tpbackup and store.attackSpeed and 0.14) or (tpbackup and antihitairtime.Value or antihitgroundtime.Value) 
+					task.wait(delayv)
+				until not antihit.Enabled
+			else
+				destroyClone()
+				tpbackup = false
+			end
+		end
+	})
+
+	antihitsettings = antihit:CreateTargets({
+		Players = true, 
+		NPCs = false
+	})
+	antihitautoair = antihit:CreateToggle({
+		Name = 'Auto Predict',
+		Default = true,
+		Function = function(call)
+			if antihitairtime then
+				antihitairtime.Object.Visible = not call
+				antihitgroundtime.Object.Visible = not call
+			end
+		end
+	})
+	antihitrange = antihit:CreateSlider({
+		Name = 'Range',
+		Min = 1,
+		Max = 40,
+		Default = 25
+	})
+	antihitgroundtime = antihit:CreateSlider({
+		Name = 'Ground Time',
+		Decimal = 15,
+		Min = 0,
+		Max = 2,
+		Default = 0.14
+	})
+	antihitairtime = antihit:CreateSlider({
+		Name = 'Air Time',
+		Decimal = 15,
+		Min = 0,
+		Max = 2,
+		Default = 0.2
+	})
+
+	visualizerToggle = antihit:CreateToggle({
+		Name = 'Visualizer',
+		Default = false,
+		Tooltip = 'Shows a red marker at your actual character location'
+	})
 end)
-
-
 
 	
 run(function()
@@ -3356,6 +3601,84 @@ run(function()
 		Default = 0.25,
 		Decimal = 100,
 		Function = function() end
+	})
+end)
+
+run(function()
+	local Speed
+	local Value
+	local WallCheck
+	local AutoJump
+	local AlwaysJump
+	local rayCheck = RaycastParams.new()
+	rayCheck.RespectCanCollide = true
+	
+	Speed = vape.Categories.Blatant:CreateModule({
+		Name = 'Speed',
+		Function = function(callback)
+			frictionTable.Speed = callback or nil
+			updateVelocity()
+			pcall(function()
+				debug.setconstant(bedwars.WindWalkerController.updateSpeed, 10, callback and 'constantSpeedMultiplier' or 'moveSpeedMultiplier') --7
+			end)
+	
+			if callback then
+				Speed:Clean(runService.PreSimulation:Connect(function(dt)
+					bedwars.StatefulEntityKnockbackController.lastImpulseTime = callback and math.huge or time()
+					if entitylib.isAlive and not Fly.Enabled and not InfiniteFly.Enabled and not LongJump.Enabled and isnetworkowner(entitylib.character.RootPart) then
+						local state = entitylib.character.Humanoid:GetState()
+						if state == Enum.HumanoidStateType.Climbing then return end
+	
+						local root, velo = entitylib.character.RootPart, getSpeed()
+						local moveDirection = AntiFallDirection or entitylib.character.Humanoid.MoveDirection
+						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
+	
+						if WallCheck.Enabled then
+							rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera}
+							rayCheck.CollisionGroup = root.CollisionGroup
+							local ray = workspace:Raycast(root.Position, destination, rayCheck)
+							if ray then
+								destination = ((ray.Position + ray.Normal) - root.Position)
+							end
+						end
+	
+						root.CFrame += destination
+						root.AssemblyLinearVelocity = (moveDirection * velo) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
+						if AutoJump.Enabled and (state == Enum.HumanoidStateType.Running or state == Enum.HumanoidStateType.Landed) and moveDirection ~= Vector3.zero and (Attacking or AlwaysJump.Enabled) then
+							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+						end
+					end
+				end))
+			end
+		end,
+		ExtraText = function()
+			return 'Heatseeker'
+		end,
+		Tooltip = 'Increases your movement with various methods.'
+	})
+	Value = Speed:CreateSlider({
+		Name = 'Speed',
+		Min = 1,
+		Max = 23,
+		Default = 23,
+		Suffix = function(val)
+			return val == 1 and 'stud' or 'studs'
+		end
+	})
+	WallCheck = Speed:CreateToggle({
+		Name = 'Wall Check',
+		Default = true
+	})
+	AutoJump = Speed:CreateToggle({
+		Name = 'AutoJump',
+		Function = function(callback)
+			AlwaysJump.Object.Visible = callback
+		end
+	})
+	AlwaysJump = Speed:CreateToggle({
+		Name = 'Always Jump',
+		Visible = false,
+		Darker = true
 	})
 end)
 	
@@ -8860,6 +9183,7 @@ run(function()
 		Default = true
 	})
 end)
+
 	
 run(function()
 	local AutoBuy
@@ -11881,173 +12205,6 @@ end
     SpeedThreshold.Object.Visible = detectionSettings.Speed.enabled
     SpeedDuration.Object.Visible = detectionSettings.Speed.enabled
     LongJumpDuration.Object.Visible = detectionSettings.LongJump.enabled
-end)
-
-
-
-run(function()
-	local Speed
-	local Value
-	local WallCheck
-	local AutoJump
-	local AlwaysJump
-	local rayCheck = RaycastParams.new()
-	rayCheck.RespectCanCollide = true
-	
-	Speed = vape.Categories.Blatant:CreateModule({
-		Name = 'Speed',
-		Function = function(callback)
-			frictionTable.Speed = callback or nil
-			updateVelocity()
-			pcall(function()
-				debug.setconstant(bedwars.WindWalkerController.updateSpeed, 9, callback and 'constantSpeedMultiplier' or 'moveSpeedMultiplier')
-			end)
-	
-			if callback then
-				Speed:Clean(runService.PreSimulation:Connect(function(dt)
-					bedwars.StatefulEntityKnockbackController.lastImpulseTime = callback and math.huge or time()
-					if entitylib.isAlive and not Fly.Enabled and not InfiniteFly.Enabled and not LongJump.Enabled and isnetworkowner(entitylib.character.RootPart) then
-						local state = entitylib.character.Humanoid:GetState()
-						if state == Enum.HumanoidStateType.Climbing then return end
-	
-						local root, velo = entitylib.character.RootPart, getSpeed()
-						local moveDirection = AntiFallDirection or entitylib.character.Humanoid.MoveDirection
-
-						local limit = shared.AntiFlagLimited and shared.AntiFlagLimit or Value.Value
-						local destination = (moveDirection * math.max(limit - velo, 0) * dt)
-	
-						if WallCheck.Enabled then
-							rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera}
-							rayCheck.CollisionGroup = root.CollisionGroup
-							local ray = workspace:Raycast(root.Position, destination, rayCheck)
-							if ray then
-								destination = ((ray.Position + ray.Normal) - root.Position)
-							end
-						end
-	
-						root.CFrame += destination
-						root.AssemblyLinearVelocity = (moveDirection * velo) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
-						if AutoJump.Enabled and (state == Enum.HumanoidStateType.Running or state == Enum.HumanoidStateType.Landed) and moveDirection ~= Vector3.zero and (Attacking or AlwaysJump.Enabled) then
-							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-						end
-					end
-				end))
-			end
-		end,
-		ExtraText = function()
-			return 'Safe'
-		end,
-		Tooltip = 'Increases your movement speed.'
-	})
-	Value = Speed:CreateSlider({
-		Name = 'Speed',
-		Min = 1,
-		Max = 23,
-		Default = 23,
-		Suffix = function(val)
-			return val == 1 and 'stud' or 'studs'
-		end
-	})
-	WallCheck = Speed:CreateToggle({
-		Name = 'Wall Check',
-		Default = true
-	})
-	AutoJump = Speed:CreateToggle({
-		Name = 'AutoJump',
-		Function = function(callback)
-			AlwaysJump.Object.Visible = callback
-		end
-	})
-	AlwaysJump = Speed:CreateToggle({
-		Name = 'Always Jump',
-		Visible = false,
-		Darker = true
-	})
-end)
-
-
-
-
-
-
-
-
-run(function()
-    local AntiFlag = vape.Categories.Blatant:CreateModule({
-        Name = 'AntiFlag',
-        Function = function(callback)
-            local heartbeatConn
-            local penaltyActive = false
-            local penaltyUntil = 0
-            local cooldown = 0
-            local lastPos = Vector3.zero
-            local lastTime = 0
-
-            if callback then
-                heartbeatConn = runService.Heartbeat:Connect(function(dt)
-                    if not (entitylib.isAlive and isnetworkowner(entitylib.character.RootPart)) then
-                        return
-                    end
-
-                    if (LongJump and LongJump.Enabled) or
-                       (lplr.Character and lplr.Character:GetAttribute('StatusEffect_speed')) then
-                        return
-                    end
-
-                    local now = tick()
-                    local root = entitylib.character.RootPart
-                    local currentPos = root.Position * Vector3.new(1, 0, 1)
-                    if lastTime == 0 then
-                        lastPos = currentPos
-                        lastTime = now
-                    else
-                        local timeDiff = now - lastTime
-                        if timeDiff >= 0.2 then
-                            local dist = (currentPos - lastPos).Magnitude
-                            local speed = dist / timeDiff
-                            if speed > 23 and not penaltyActive then
-                                penaltyActive = true
-                                penaltyUntil = now + 3
-                                if now > cooldown then
-                                    notif('AntiFlag', 'Speed exceeded! ('..math.floor(speed)..' sps) Limiting to 21.', 3, 'warning')
-                                    cooldown = now + 3
-                                end
-                            end
-
-                            lastPos = currentPos
-                            lastTime = now
-                        end
-                    end
-
-                    if penaltyActive then
-                        if now > penaltyUntil then
-                            penaltyActive = false
-                            if now > cooldown then
-                                notif('AntiFlag', 'Flag prevented! Speed restored.', 3, 'success')
-                                cooldown = now + 3
-                            end
-                        else
-                            local vel = root.AssemblyLinearVelocity
-                            local horizontal = Vector3.new(vel.X, 0, vel.Z)
-                            if horizontal.Magnitude > 21 then
-                                local newHorizontal = horizontal.Unit * 21
-                                root.AssemblyLinearVelocity = newHorizontal + Vector3.new(0, vel.Y, 0)
-                                root.Velocity = root.AssemblyLinearVelocity
-                        
-                            end
-                        end
-                    end
-                end)
-            else
-                if heartbeatConn then heartbeatConn:Disconnect() end
-                penaltyActive = false
-            end
-        end,
-        ExtraText = function()
-            return penaltyActive and 'Limit' or 'Monitoring'
-        end,
-        Tooltip = 'Limits speed to prevent movement flags.'
-    })
 end)
 
 run(function()
