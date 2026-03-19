@@ -1,4 +1,3 @@
---This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func)
 	func()
 end
@@ -1593,32 +1592,26 @@ run(function()
 	local antihitsettings = nil :: table
 	local antihitgroundtime = nil :: table
 	local antihitautoair = nil :: table
-	local visualizerToggle = nil :: table
+	local antihitvisualizer = nil :: table
 
 	local oldroot
 	local clone
-	local visualizerPart = nil
+	local visualizerPart
 
-	-- Check if a world position is inside an empty block (no solid block)
-	local function isPositionSafe(worldPos)
-		-- Block containing the position
-		if getPlacedBlock(worldPos) then return false end
-		-- Block above (head level)
-		if getPlacedBlock(worldPos + Vector3.new(0, 3, 0)) then return false end
-		return true
-	end
+	-- Find safe Y at given X,Z (raycast down from above), then add 10 studs
+	local function getSafeYAt(x, z, partSize, startY)
+		startY = startY or 1000
+		local params = RaycastParams.new()
+		params.FilterDescendantsInstances = {lplr.Character, oldroot, clone, visualizerPart}
+		params.FilterType = Enum.RaycastFilterType.Blacklist
 
-	-- Find a safe upward offset between minOffset and maxOffset
-	local function getSafeUpOffset(currentPos, minOffset, maxOffset)
-		local attempts = 20
-		for _ = 1, attempts do
-			local offset = math.random(minOffset, maxOffset)  -- random integer offset
-			local targetPos = currentPos + Vector3.new(0, offset, 0)
-			if isPositionSafe(targetPos) then
-				return offset
-			end
+		local ray = workspace:Raycast(Vector3.new(x, startY, z), Vector3.new(0, -2000, 0), params)
+		if ray then
+			-- Return ground Y + 10 studs (character will hover)
+			return ray.Position.Y + 10
 		end
-		return nil  -- no safe offset found
+		-- fallback: use clone's current Y if ray fails
+		return clone and clone.Position.Y or 0
 	end
 
 	local function createClone()
@@ -1640,55 +1633,36 @@ run(function()
 				end
 			end
 
-			-- Visualizer (shows actual character location)
-			if visualizerToggle and visualizerToggle.Enabled and oldroot then
+			if antihitvisualizer and antihitvisualizer.Enabled then
 				visualizerPart = Instance.new("Part")
-				visualizerPart.Size = Vector3.new(4, 4, 4)
-				visualizerPart.Transparency = 0.7
-				visualizerPart.BrickColor = BrickColor.new("Bright red")
-				visualizerPart.Material = Enum.Material.ForceField
+				visualizerPart.Name = "AntiHitVisualizer"
 				visualizerPart.Anchored = true
 				visualizerPart.CanCollide = false
-				visualizerPart.CanQuery = false
+				visualizerPart.Transparency = 0.6
+				visualizerPart.BrickColor = BrickColor.new("Bright red")
+				visualizerPart.Material = Enum.Material.Neon
+				visualizerPart.Size = Vector3.new(4, 4, 4)
 				visualizerPart.Parent = workspace
-
-				local billboard = Instance.new("BillboardGui")
-				billboard.Size = UDim2.fromOffset(100, 30)
-				billboard.StudsOffset = Vector3.new(0, 3, 0)
-				billboard.AlwaysOnTop = true
-				billboard.Parent = visualizerPart
-
-				local text = Instance.new("TextLabel")
-				text.Size = UDim2.new(1, 0, 1, 0)
-				text.BackgroundTransparency = 1
-				text.Text = "ACTUAL"
-				text.TextColor3 = Color3.new(1, 0, 0)
-				text.TextScaled = true
-				text.Font = Enum.Font.GothamBold
-				text.Parent = billboard
-
-				local heartbeat
-				heartbeat = runService.Heartbeat:Connect(function()
-					if oldroot and oldroot.Parent and visualizerPart then
-						visualizerPart.CFrame = oldroot.CFrame
-					else
-						if heartbeat then heartbeat:Disconnect() end
-					end
-				end)
-				antihit:Clean(heartbeat)
+				visualizerPart.CFrame = oldroot.CFrame
 			end
 
 			return true
 		end
 		return false
 	end
-
+	
 	local function destroyClone()
-		if visualizerPart then
-			visualizerPart:Destroy()
-			visualizerPart = nil
-		end
 		if not oldroot or not oldroot.Parent or not entitylib.isAlive then return false end
+
+		-- Keep X and Z exactly where the clone is, only adjust Y to be 10 studs above ground
+		local clonePos = clone.Position
+		local safeY = getSafeYAt(clonePos.X, clonePos.Z, oldroot.Size, clonePos.Y + 50)
+		local targetPos = Vector3.new(clonePos.X, safeY, clonePos.Z)
+
+		-- Move oldroot to that position (still in gameCamera)
+		oldroot.CFrame = CFrame.new(targetPos)
+
+		-- Reattach
 		lplr.Character.Parent = game
 		oldroot.Parent = lplr.Character
 		lplr.Character.PrimaryPart = oldroot
@@ -1700,14 +1674,14 @@ run(function()
 				if v.Part1 == clone then v.Part1 = oldroot end
 			end
 		end
-		local oldcf = clone.CFrame
 		if clone then
 			clone:Destroy()
 			clone = nil
 		end
 		oldroot.Transparency = 1
 		oldroot = nil
-		entitylib.character.RootPart.CFrame = oldcf + Vector3.new(0, 3, 0)
+
+		-- No extra teleport – the character is already at oldroot's position
 		task.spawn(function()
 			for i = 1, 12 do
 				entitylib.character.RootPart.Velocity = Vector3.zero
@@ -1715,6 +1689,11 @@ run(function()
 			end
 		end)
 		entitylib.character.Humanoid.HipHeight = 2
+
+		if visualizerPart then
+			visualizerPart:Destroy()
+			visualizerPart = nil
+		end
 	end
 
 	local rayCheck = RaycastParams.new()
@@ -1744,10 +1723,15 @@ run(function()
 								lastantihitting = antihitting
 							end
 						end
+
+						if visualizerPart and oldroot and oldroot.Parent then
+							visualizerPart.CFrame = oldroot.CFrame
+						end
 					end
 				end))
+
 				repeat
-					if store.matchState == 0 or not entitylib.isAlive or flylanding then task.wait() continue end
+				  	if store.matchState == 0 or not entitylib.isAlive or flylanding then task.wait() continue end
 					rayCheck.FilterDescendantsInstances = {lplr.Character, store.antifallpart}
 					local plr = entitylib.AllPosition({
 						Range = antihitrange.Value,
@@ -1765,16 +1749,11 @@ run(function()
 						end
 						antihitting = not tpbackup
 						projectileHitting = false
+
 						if not tpbackup then
-							-- Teleport up 50–80 studs into empty space
-							local currentPos = oldroot.Position
-							local safeOffset = getSafeUpOffset(currentPos, 50, 80)
-							if safeOffset then
-								oldroot.CFrame += Vector3.new(0, safeOffset, 0)
-							else
-								notif('AntiHit', 'Suffocation possible, Canceling TP', 3, 'warning')
-								-- No teleport; keep oldroot where it is
-							end
+							-- Random upward teleport (20-30 studs) – oldroot is in gameCamera, so no collision risk
+							local offsetY = math.random(20, 30)
+							oldroot.CFrame += Vector3.new(0, offsetY, 0)
 						end
 					else
 						antihitting = false
@@ -1790,6 +1769,7 @@ run(function()
 		end
 	})
 
+	-- Settings
 	antihitsettings = antihit:CreateTargets({
 		Players = true, 
 		NPCs = false
@@ -1824,11 +1804,28 @@ run(function()
 		Max = 2,
 		Default = 0.2
 	})
-
-	visualizerToggle = antihit:CreateToggle({
+	antihitvisualizer = antihit:CreateToggle({
 		Name = 'Visualizer',
 		Default = false,
-		Tooltip = 'Shows a red marker at your actual character location'
+		Function = function(call)
+			if not call and visualizerPart then
+				visualizerPart:Destroy()
+				visualizerPart = nil
+			elseif call and oldroot and oldroot.Parent then
+				if not visualizerPart then
+					visualizerPart = Instance.new("Part")
+					visualizerPart.Name = "AntiHitVisualizer"
+					visualizerPart.Anchored = true
+					visualizerPart.CanCollide = false
+					visualizerPart.Transparency = 0.6
+					visualizerPart.BrickColor = BrickColor.new("Bright red")
+					visualizerPart.Material = Enum.Material.Neon
+					visualizerPart.Size = Vector3.new(4, 4, 4)
+					visualizerPart.Parent = workspace
+					visualizerPart.CFrame = oldroot.CFrame
+				end
+			end
+		end
 	})
 end)
 
