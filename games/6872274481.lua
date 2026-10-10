@@ -175,12 +175,6 @@ local function getRoactRender(func)
 	return ok and res or nil
 end
 
-local HotbarAppRaw = require(lplr.PlayerScripts.TS.controllers.global.hotbar.ui['hotbar-app']).HotbarApp
-local HotbarApp = getRoactRender(HotbarAppRaw.render)
-if not HotbarApp then
-	warn('[bedwars] HotbarApp layout changed — Interface/UICleanup disabled')
-end
-
 local function getSword()
 	local bestSword, bestSwordSlot, bestSwordDamage = nil, nil, 0
 	for slot, item in store.inventory.inventory.items do
