@@ -418,7 +418,7 @@ do
 			res.Font:find('rbxasset') and res.Font
 			or string.format('rbxasset://fonts/families/%s.json', res.Font)
 		) or uipallet.Font
-		uipallet.FontSemiBold = Font.new(uipallet.Font.Family, Enum.FontWeight.SemiBold)
+		uipallet.FontSemiBold = Font.new(uipallet.Font.Family, Enum.FontWeight.Bold)
 	end
 	fontsize.Font = uipallet.Font
 end
