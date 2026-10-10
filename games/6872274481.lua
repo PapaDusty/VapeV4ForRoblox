@@ -167,14 +167,6 @@ local function getItem(itemName, inv)
 	return nil
 end
 
-local function getRoactRender(func)
-	if type(func) ~= 'function' then return nil end
-	local ok, res = pcall(function()
-		return debug.getupvalue(debug.getupvalue(debug.getupvalue(func, 3).render, 2).render, 1)
-	end)
-	return ok and res or nil
-end
-
 local function getSword()
 	local bestSword, bestSwordSlot, bestSwordDamage = nil, nil, 0
 	for slot, item in store.inventory.inventory.items do
