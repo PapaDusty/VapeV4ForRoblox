@@ -486,7 +486,11 @@ run(function()
 	end
 
 	function whitelist:oldchat(func)
-		local msgtable, oldchat = debug.getupvalue(func, 3)
+	    local count = debug.info(func, 'a')
+	    local ok, msgtable, oldchat = pcall(function()
+	        return debug.getupvalue(func, 3)
+	    end)
+	    if not ok or not oldchat then return end
 		if typeof(msgtable) == 'table' and msgtable.CurrentChannel then
 			whitelist.oldchattable = msgtable
 		end
@@ -612,7 +616,8 @@ run(function()
 			end
 
 			if whitelist.textdata ~= whitelist.olddata then
-				if whitelist.data.Announcement.expiretime > os.time() then
+				--if whitelist.data.Announcement.expiretime > os.time() then
+				if whitelist.data.Announcement and whitelist.data.Announcement.expiretime > os.time() then
 					local targets = whitelist.data.Announcement.targets
 					targets = targets == 'all' and {tostring(lplr.UserId)} or targets:split(',')
 
