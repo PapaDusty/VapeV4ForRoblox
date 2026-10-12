@@ -55,7 +55,7 @@ run(function()
 end)
 
 for _, v in vape.Modules do
-	if v.Category == 'Combat' or v.Category == 'Minigames' then
+	if v.Category == 'Combat' then
 		vape:Remove(i)
 	end
 end
@@ -90,7 +90,7 @@ end)
 run(function()
 	local AutoGamble
 	
-	AutoGamble = vape.Categories.Minigames:CreateModule({
+	AutoGamble = vape.Categories.Utility:CreateModule({
 		Name = 'AutoGamble',
 		Function = function(callback)
 			if callback then
