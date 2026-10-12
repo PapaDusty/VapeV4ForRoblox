@@ -6122,90 +6122,6 @@ run(function()
 end)
 	
 run(function()
-	local ChatSpammer
-	local Lines
-	local Mode
-	local Delay
-	local Hide
-	local oldchat
-	
-	ChatSpammer = vape.Categories.Utility:CreateModule({
-		Name = 'ChatSpammer',
-		Function = function(callback)
-			if callback then
-				if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-					if Hide.Enabled and coreGui:FindFirstChild('ExperienceChat') then
-						ChatSpammer:Clean(coreGui.ExperienceChat:FindFirstChild('RCTScrollContentView', true).ChildAdded:Connect(function(msg)
-							if msg.Name:sub(1, 2) == '0-' and msg.ContentText == 'You must wait before sending another message.' then
-								msg.Visible = false
-							end
-						end))
-					end
-				elseif replicatedStorage:FindFirstChild('DefaultChatSystemChatEvents') then
-					if Hide.Enabled then
-						oldchat = hookfunction(getconnections(replicatedStorage.DefaultChatSystemChatEvents.OnNewSystemMessage.OnClientEvent)[1].Function, function(data, ...)
-							if data.Message:find('ChatFloodDetector') then return end
-							return oldchat(data, ...)
-						end)
-					end
-				else
-					notif('ChatSpammer', 'unsupported chat', 5, 'warning')
-					ChatSpammer:Toggle()
-					return
-				end
-				
-				local ind = 1
-				repeat
-					local message = (#Lines.ListEnabled > 0 and Lines.ListEnabled[math.random(1, #Lines.ListEnabled)] or 'vxpe on top')
-					if Mode.Value == 'Order' and #Lines.ListEnabled > 0 then
-						message = Lines.ListEnabled[ind] or Lines.ListEnabled[1]
-						ind = (ind % #Lines.ListEnabled) + 1
-					end
-	
-					if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-						textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(message)
-					else
-						replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, 'All')
-					end
-	
-					task.wait(Delay.Value)
-				until not ChatSpammer.Enabled
-			else
-				if oldchat then
-					hookfunction(getconnections(replicatedStorage.DefaultChatSystemChatEvents.OnNewSystemMessage.OnClientEvent)[1].Function, oldchat)
-				end
-			end
-		end,
-		Tooltip = 'Automatically types in chat'
-	})
-	Lines = ChatSpammer:CreateTextList({Name = 'Lines'})
-	Mode = ChatSpammer:CreateDropdown({
-		Name = 'Mode',
-		List = {'Random', 'Order'}
-	})
-	Delay = ChatSpammer:CreateSlider({
-		Name = 'Delay',
-		Min = 0.1,
-		Max = 10,
-		Default = 1,
-		Decimal = 10,
-		Suffix = function(val)
-			return val == 1 and 'second' or 'seconds'
-		end
-	})
-	Hide = ChatSpammer:CreateToggle({
-		Name = 'Hide Flood Message',
-		Default = true,
-		Function = function()
-			if ChatSpammer.Enabled then
-				ChatSpammer:Toggle()
-				ChatSpammer:Toggle()
-			end
-		end
-	})
-end)
-	
-run(function()
 	local Disabler
 	
 	local function characterAdded(char)
@@ -6739,7 +6655,7 @@ run(function()
 		end
 	end
 	
-	MurderMystery = vape.Categories.Minigames:CreateModule({
+	MurderMystery = vape.Categories.Utility:CreateModule({
 		Name = 'MurderMystery',
 		Function = function(callback)
 			if callback then
@@ -7928,3 +7844,181 @@ run(function()
 	
 end)
 	
+run(function()
+	local Ambience
+	local lightingService = cloneref(game:GetService('Lighting'))
+	local lightingstuff = {}
+	local skybox
+
+	Ambience = vape.Legit:CreateModule({
+		Name = 'Rose Ambience',
+		Function = function(callback)
+			if callback then
+				lightingstuff.Ambient = lightingService.Ambient
+				lightingstuff.ColorShift_Bottom = lightingService.ColorShift_Bottom
+				lightingstuff.ColorShift_Top = lightingService.ColorShift_Top
+				lightingstuff.OutdoorAmbient = lightingService.OutdoorAmbient
+				lightingstuff.Brightness = lightingService.Brightness
+
+				lightingService.Ambient = Color3.fromRGB(255, 0, 208)
+				lightingService.ColorShift_Bottom = Color3.fromRGB(111, 43, 150)
+				lightingService.ColorShift_Top = Color3.fromRGB(111, 43, 150)
+				lightingService.OutdoorAmbient = Color3.fromRGB(111, 43, 150)
+				lightingService.Brightness = 4
+
+				skybox = Instance.new('Sky')
+				skybox.SkyboxBk = 'http://www.roblox.com/asset/?id=271042516'
+				skybox.SkyboxDn = 'http://www.roblox.com/asset/?id=271077243'
+				skybox.SkyboxFt = 'http://www.roblox.com/asset/?id=271042556'
+				skybox.SkyboxLf = 'http://www.roblox.com/asset/?id=271042310'
+				skybox.SkyboxRt = 'http://www.roblox.com/asset/?id=271042467'
+				skybox.SkyboxUp = 'http://www.roblox.com/asset/?id=271077958'
+				skybox.Parent = lightingService
+				Ambience:Clean(skybox)
+			else
+				for i, v in lightingstuff do
+					lightingService[i] = v
+				end
+				if skybox then
+					skybox:Destroy()
+					skybox = nil
+				end
+			end
+		end,
+		Tooltip = 'Rose Ambience'
+	})
+end)
+
+run(function()
+	local NiceShaders
+	local lightingService = cloneref(game:GetService('Lighting'))
+	local lightingstuff = {}
+	local createdEffects = {}
+
+	NiceShaders = vape.Legit:CreateModule({
+		Name = 'RTX Shaders',
+		Function = function(callback)
+			if callback then
+				
+				lightingstuff.Brightness = lightingService.Brightness
+				lightingstuff.ColorShift_Bottom = lightingService.ColorShift_Bottom
+				lightingstuff.ColorShift_Top = lightingService.ColorShift_Top
+				lightingstuff.OutdoorAmbient = lightingService.OutdoorAmbient
+				lightingstuff.ClockTime = lightingService.ClockTime
+				lightingstuff.FogColor = lightingService.FogColor
+				lightingstuff.FogEnd = lightingService.FogEnd
+				lightingstuff.FogStart = lightingService.FogStart
+				lightingstuff.ExposureCompensation = lightingService.ExposureCompensation
+				lightingstuff.ShadowSoftness = lightingService.ShadowSoftness
+				lightingstuff.Ambient = lightingService.Ambient
+
+				for _, child in lightingService:GetChildren() do
+					table.insert(createdEffects, child)
+				end
+
+				lightingService:ClearAllChildren()
+
+				local Bloom = Instance.new('BloomEffect')
+				Bloom.Intensity = 0.1
+				Bloom.Threshold = 0
+				Bloom.Size = 100
+				Bloom.Parent = lightingService
+
+				local Tropic = Instance.new('Sky')
+				Tropic.Name = 'Tropic'
+				Tropic.SkyboxUp = 'http://www.roblox.com/asset/?id=169210149'
+				Tropic.SkyboxLf = 'http://www.roblox.com/asset/?id=169210133'
+				Tropic.SkyboxBk = 'http://www.roblox.com/asset/?id=169210090'
+				Tropic.SkyboxFt = 'http://www.roblox.com/asset/?id=169210121'
+				Tropic.StarCount = 100
+				Tropic.SkyboxDn = 'http://www.roblox.com/asset/?id=169210108'
+				Tropic.SkyboxRt = 'http://www.roblox.com/asset/?id=169210143'
+				Tropic.Parent = lightingService
+
+				local SkyBox = Instance.new('Sky')
+				SkyBox.SkyboxUp = 'http://www.roblox.com/asset/?id=196263782'
+				SkyBox.SkyboxLf = 'http://www.roblox.com/asset/?id=196263721'
+				SkyBox.SkyboxBk = 'http://www.roblox.com/asset/?id=196263721'
+				SkyBox.SkyboxFt = 'http://www.roblox.com/asset/?id=196263721'
+				SkyBox.CelestialBodiesShown = false
+				SkyBox.SkyboxDn = 'http://www.roblox.com/asset/?id=196263643'
+				SkyBox.SkyboxRt = 'http://www.roblox.com/asset/?id=196263721'
+				SkyBox.Parent = lightingService
+
+				local Blur = Instance.new('BlurEffect')
+				Blur.Size = 2
+				Blur.Parent = lightingService
+
+				local Efecto = Instance.new('BlurEffect')
+				Efecto.Name = 'Efecto'
+				Efecto.Enabled = false
+				Efecto.Size = 4
+				Efecto.Parent = lightingService
+
+				local Inaritaisha = Instance.new('ColorCorrectionEffect')
+				Inaritaisha.Name = 'Inari taisha'
+				Inaritaisha.Saturation = 0.05
+				Inaritaisha.TintColor = Color3.fromRGB(255, 224, 219)
+				Inaritaisha.Parent = lightingService
+
+				local Normal = Instance.new('ColorCorrectionEffect')
+				Normal.Name = 'Normal'
+				Normal.Enabled = false
+				Normal.Saturation = -0.2
+				Normal.TintColor = Color3.fromRGB(255, 232, 215)
+				Normal.Parent = lightingService
+
+				local SunRays = Instance.new('SunRaysEffect')
+				SunRays.Intensity = 0.05
+				SunRays.Parent = lightingService
+
+				local Sunset = Instance.new('Sky')
+				Sunset.Name = 'Sunset'
+				Sunset.SkyboxUp = 'rbxassetid://323493360'
+				Sunset.SkyboxLf = 'rbxassetid://323494252'
+				Sunset.SkyboxBk = 'rbxassetid://323494035'
+				Sunset.SkyboxFt = 'rbxassetid://323494130'
+				Sunset.SkyboxDn = 'rbxassetid://323494368'
+				Sunset.SunAngularSize = 14
+				Sunset.SkyboxRt = 'rbxassetid://323494067'
+				Sunset.Parent = lightingService
+
+				local Takayama = Instance.new('ColorCorrectionEffect')
+				Takayama.Name = 'Takayama'
+				Takayama.Enabled = false
+				Takayama.Saturation = -0.3
+				Takayama.Contrast = 0.1
+				Takayama.TintColor = Color3.fromRGB(235, 214, 204)
+				Takayama.Parent = lightingService
+
+				lightingService.Brightness = 2.3
+				lightingService.ColorShift_Bottom = Color3.fromRGB(11, 0, 20)
+				lightingService.ColorShift_Top = Color3.fromRGB(240, 127, 14)
+				lightingService.OutdoorAmbient = Color3.fromRGB(34, 0, 49)
+				lightingService.ClockTime = 7.5
+				lightingService.FogColor = Color3.fromRGB(94, 76, 106)
+				lightingService.FogEnd = 300
+				lightingService.FogStart = 0
+				lightingService.ExposureCompensation = 0.24
+				lightingService.ShadowSoftness = 0
+				lightingService.Ambient = Color3.fromRGB(59, 33, 27)
+			else
+				print('shaders disabled')
+				lightingService:ClearAllChildren()
+				
+				for i, v in lightingstuff do
+					lightingService[i] = v
+				end
+
+				for _, child in createdEffects do
+					if child and child.Parent == nil then
+						child.Parent = lightingService
+					end
+				end
+				table.clear(createdEffects)
+				table.clear(lightingstuff)
+			end
+		end,
+		Tooltip = 'Applies atmospheric shaders and custom lighting'
+	})
+end)
