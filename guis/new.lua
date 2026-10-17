@@ -54,8 +54,8 @@ local tween = {
 local uipallet = {
 	Main = Color3.fromRGB(26, 25, 26),
 	Text = Color3.fromRGB(200, 200, 200),
-	Font = Font.fromEnum(Enum.Font.BuilderSansMedium),
-	FontSemiBold = Font.fromEnum(Enum.Font.BuilderSansMedium, Enum.FontWeight.SemiBold),
+	Font = Font.fromEnum(Enum.Font.BuilderSans),
+	FontSemiBold = Font.fromEnum(Enum.Font.BuilderSans, Enum.FontWeight.SemiBold),
 	Tween = TweenInfo.new(0.16, Enum.EasingStyle.Linear),
 
 	TextSizeLarge = 18,
@@ -992,7 +992,8 @@ components = {
 		button.Parent = bkg
 		local title = Instance.new('TextLabel')
 		title.Name = 'Title'
-		title.Size = UDim2.new(1, 0, 0, 29)
+		title.Position = UDim2.fromOffset(8, 0)
+		title.Size = UDim2.new(1, -25, 0, 29)
 		title.BackgroundTransparency = 1
 		title.Text = optionsettings.Name..' - '..optionapi.Value
 		title.TextXAlignment = Enum.TextXAlignment.Left
@@ -1034,7 +1035,9 @@ components = {
 		
 		function optionapi:SetValue(val, mouse)
 			self.Value = table.find(optionsettings.List, val) and val or optionsettings.List[1] or 'None'
-			title.Text = '         '..optionsettings.Name..' - '..self.Value
+			title.Position = UDim2.fromOffset(8, 0)
+			title.Size = UDim2.new(1, -25, 0, 29)
+			title.Text = optionsettings.Name..' - '..self.Value
 			if dropdownchildren then
 				arrow.Rotation = 90
 				dropdownchildren:Destroy()
@@ -1059,13 +1062,15 @@ components = {
 					if v == optionapi.Value then continue end
 					local dropdownoption = Instance.new('TextButton')
 					dropdownoption.Name = v..'Option'
-					dropdownoption.Size = UDim2.new(1, 0, 0, 26)
-					dropdownoption.Position = UDim2.fromOffset(0, ind * 26)
 					dropdownoption.BackgroundColor3 = uipallet.Main
 					dropdownoption.BorderSizePixel = 0
 					dropdownoption.AutoButtonColor = false
 					dropdownoption.Text = v
 					dropdownoption.TextXAlignment = Enum.TextXAlignment.Left
+					dropdownoption.TextYAlignment = Enum.TextYAlignment.Center
+					dropdownoption.TextWrapped = false
+					dropdownoption.Size = UDim2.new(1, -8, 0, 26)
+					dropdownoption.Position = UDim2.fromOffset(8, ind * 26)
 					dropdownoption.TextColor3 = Color3.fromRGB(143, 143, 143)
 					dropdownoption.TextSize = 17
 					dropdownoption.TextTruncate = Enum.TextTruncate.AtEnd
@@ -1246,8 +1251,13 @@ components = {
 		knob.Parent = knobholder
 		addCorner(knob, UDim.new(1, 0))
 		optionsettings.Function = optionsettings.Function or function() end
+		local stepDecimals
+		if optionsettings.Step then
+			optionsettings.Decimal = math.floor(1 / optionsettings.Step + 0.5)
+			stepDecimals = #(tostring(optionsettings.Step):gsub('.*%.', ''))
+		end
 		optionsettings.Decimal = optionsettings.Decimal or 1
-		
+
 		function optionapi:Save(tab)
 			tab[optionsettings.Name] = {
 				Value = self.Value,
@@ -1274,7 +1284,7 @@ components = {
 			tween:Tween(fill, uipallet.Tween, {
 				Size = UDim2.fromScale(math.clamp(pos or math.clamp(value / optionsettings.Max, 0, 1), 0.04, 0.96), 1)
 			})
-			valuebutton.Text = self.Value..(optionsettings.Suffix and ' '..(type(optionsettings.Suffix) == 'function' and optionsettings.Suffix(self.Value) or optionsettings.Suffix) or '')
+			valuebutton.Text = (stepDecimals and string.format('%.'..stepDecimals..'f', self.Value) or self.Value)..(optionsettings.Suffix and ' '..(type(optionsettings.Suffix) == 'function' and optionsettings.Suffix(self.Value) or optionsettings.Suffix) or '')
 			if check or final then
 				optionsettings.Function(value, final)
 			end
@@ -3721,7 +3731,7 @@ function mainapi:CreateCategory(categorysettings)
 			Options = {},
 			Bind = {},
 			Index = getTableSize(mainapi.Modules),
-			ExtraText = modulesettings.ExtraText,
+			Suffix = modulesettings.Suffix,
 			Name = modulesettings.Name,
 			Category = categorysettings.Name
 		}
@@ -6110,7 +6120,7 @@ scaleslider = guipane:CreateSlider({
 	Name = 'Scale',
 	Min = 0.1,
 	Max = 2,
-	Decimal = 10,
+	Step = 0.05,
 	Function = function(val, final)
 		if final and not mainapi.Scale.Enabled then
 			scale.Scale = val
@@ -6242,12 +6252,19 @@ local textguifont = textgui:CreateFont({
 		mainapi:UpdateTextGUI()
 	end
 })
+local textguisuffixmode = textgui:CreateDropdown({
+	Name = 'Suffix mode',
+	List = {'Basic', 'Extended', 'None'},
+	Function = function()
+		mainapi:UpdateTextGUI()
+	end
+})
 local textguicolor
 local textguicolordrop = textgui:CreateDropdown({
 	Name = 'Color Mode',
 	List = {'Match GUI', 'Custom'},
 	Function = function(val)
-		textguicolor.Object.Visible = val == 'Custom color'
+		textguicolor.Object.Visible = val == 'Custom'
 		mainapi:UpdateTextGUI()
 	end
 })
@@ -6353,30 +6370,17 @@ local textguimodules = textgui:CreateToggle({
 	end
 })
 textguimoduleslist = textgui:CreateTextList({
-	Name = 'Blacklist',
+	Name = 'Hidden modules',
 	Tooltip = 'Name of module to hide.',
-	Icon = getcustomasset('vapev4/assets/new/blockedicon.png'),
-	Tab = getcustomasset('vapev4/assets/new/blockedtab.png'),
+	Icon = getcustomasset('vapev4/assets/new/allowedicon.png'),
+	Tab = getcustomasset('vapev4/assets/new/allowedicon.png'),
 	TabSize = UDim2.fromOffset(21, 16),
-	Color = Color3.fromRGB(250, 50, 56),
+	Color = Color3.fromRGB(5, 133, 104),
 	Function = function()
 		mainapi:UpdateTextGUI()
 	end,
 	Visible = false,
 	Darker = true
-})
-local textguirender = textgui:CreateToggle({
-	Name = 'Hide render',
-	Function = function()
-		mainapi:UpdateTextGUI()
-	end
-})
-local textguiextratext = textgui:CreateToggle({
-    Name = 'Hide ExtraText',
-    Tooltip = 'Hide additional info shown beside modules.',
-    Function = function()
-        mainapi:UpdateTextGUI()
-    end
 })
 local textguibox
 local textguifontcustom
@@ -6808,7 +6812,6 @@ function mainapi:UpdateTextGUI(afterload)
 		local info = TweenInfo.new(0.3, Enum.EasingStyle.Exponential)
 		for i, v in mainapi.Modules do
 			if textguimodules.Enabled and table.find(textguimoduleslist.ListEnabled, i) then continue end
-			if textguirender.Enabled and v.Category == 'Render' then continue end
 			if v.Enabled or table.find(found, i) then
 				local holder = Instance.new('Frame')
 				holder.Name = i
@@ -6846,10 +6849,37 @@ function mainapi:UpdateTextGUI(afterload)
 				holdertext.Position = UDim2.fromOffset(right and 3 or 6, 2)
 				holdertext.BackgroundTransparency = 1
 				holdertext.BorderSizePixel = 0
-				if not (textguiextratext and textguiextratext.Enabled) and v.ExtraText then
-   				 	holdertext.Text = i.." <font color='#A8A8A8'>"..v.ExtraText()..'</font>'
+				local suffixText = ''
+				local suffixMode = textguisuffixmode and textguisuffixmode.Value or 'None'
+				local moduleSuffix = v.Suffix
+				if suffixMode ~= 'None' and moduleSuffix then
+					local basicSuffix, extendedSuffix
+					if type(moduleSuffix) == 'function' then
+						basicSuffix = moduleSuffix
+					elseif type(moduleSuffix) == 'table' then
+						basicSuffix = moduleSuffix.Basic
+						extendedSuffix = moduleSuffix.Extended
+					end
+
+					local suffixFunc
+					if suffixMode == 'Basic' then
+						suffixFunc = basicSuffix or extendedSuffix
+					elseif suffixMode == 'Extended' then
+						suffixFunc = extendedSuffix or basicSuffix
+					end
+
+					if suffixFunc then
+						local ok, res = pcall(suffixFunc)
+						if ok and res and res ~= '' then
+							suffixText = res
+						end
+					end
+				end
+
+				if suffixText ~= '' then
+					holdertext.Text = i.." <font color='#A8A8A8'>"..suffixText..'</font>'
 				else
-   				  	holdertext.Text = i
+					holdertext.Text = i
 				end
 				holdertext.TextSize = 18
 				holdertext.FontFace = textguifont.Value
@@ -6926,7 +6956,7 @@ function mainapi:UpdateGUI(hue, sat, val, default)
 		})
 		VapeLabelCustom.TextColor3 = textguicolorcustomtoggle.Enabled and Color3.fromHSV(textguicolorcustom.Hue, textguicolorcustom.Sat, textguicolorcustom.Value) or VapeLogoGradient.Color.Keypoints[2].Value
 
-		local customcolor = textguicolordrop.Value == 'Custom color' and Color3.fromHSV(textguicolor.Hue, textguicolor.Sat, textguicolor.Value) or nil
+		local customcolor = textguicolordrop.Value == 'Custom' and Color3.fromHSV(textguicolor.Hue, textguicolor.Sat, textguicolor.Value) or nil
 		for i, v in VapeLabels do
 			v.Text.TextColor3 = customcolor or (mainapi.GUIColor.Rainbow and Color3.fromHSV(mainapi:Color((hue - ((textguigradient and i + 2 or i) * 0.025)) % 1)) or VapeLogoGradient.Color.Keypoints[2].Value)
 			if v.Color then
