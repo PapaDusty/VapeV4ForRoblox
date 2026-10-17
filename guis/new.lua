@@ -20,7 +20,7 @@ local mainapi = {
 	Scale = {Value = 1},
 	ThreadFix = setthreadidentity and true or false,
 	ToggleNotifications = {},
-	Version = '4.18',
+	Version = '4.21',
 	Windows = {}
 }
 
@@ -54,75 +54,79 @@ local tween = {
 local uipallet = {
 	Main = Color3.fromRGB(26, 25, 26),
 	Text = Color3.fromRGB(200, 200, 200),
-	Font = Font.fromEnum(Enum.Font.Arial),
-	FontSemiBold = Font.fromEnum(Enum.Font.Arial, Enum.FontWeight.SemiBold),
-	Tween = TweenInfo.new(0.16, Enum.EasingStyle.Linear)
+	Font = Font.fromEnum(Enum.Font.BuilderSansMedium),
+	FontSemiBold = Font.fromEnum(Enum.Font.BuilderSansMedium, Enum.FontWeight.SemiBold),
+	Tween = TweenInfo.new(0.16, Enum.EasingStyle.Linear),
+
+	TextSizeLarge = 18,
+	TextSizeMedium = 15,
+	TextSizeSmall = 13
 }
 
 local getcustomassets = {
-	['newvape/assets/new/add.png'] = 'rbxassetid://14368300605',
-	['newvape/assets/new/alert.png'] = 'rbxassetid://14368301329',
-	['newvape/assets/new/allowedicon.png'] = 'rbxassetid://14368302000',
-	['newvape/assets/new/allowedtab.png'] = 'rbxassetid://14368302875',
-	['newvape/assets/new/arrowmodule.png'] = 'rbxassetid://14473354880',
-	['newvape/assets/new/back.png'] = 'rbxassetid://14368303894',
-	['newvape/assets/new/bind.png'] = 'rbxassetid://14368304734',
-	['newvape/assets/new/bindbkg.png'] = 'rbxassetid://14368305655',
-	['newvape/assets/new/blatanticon.png'] = 'rbxassetid://14368306745',
-	['newvape/assets/new/blockedicon.png'] = 'rbxassetid://14385669108',
-	['newvape/assets/new/blockedtab.png'] = 'rbxassetid://14385672881',
-	['newvape/assets/new/blur.png'] = 'rbxassetid://14898786664',
-	['newvape/assets/new/blurnotif.png'] = 'rbxassetid://16738720137',
-	['newvape/assets/new/close.png'] = 'rbxassetid://14368309446',
-	['newvape/assets/new/closemini.png'] = 'rbxassetid://14368310467',
-	['newvape/assets/new/colorpreview.png'] = 'rbxassetid://14368311578',
-	['newvape/assets/new/combaticon.png'] = 'rbxassetid://14368312652',
-	['newvape/assets/new/customsettings.png'] = 'rbxassetid://14403726449',
-	['newvape/assets/new/discord.png'] = '',
-	['newvape/assets/new/dots.png'] = 'rbxassetid://14368314459',
-	['newvape/assets/new/edit.png'] = 'rbxassetid://14368315443',
-	['newvape/assets/new/expandicon.png'] = 'rbxassetid://14368353032',
-	['newvape/assets/new/expandright.png'] = 'rbxassetid://14368316544',
-	['newvape/assets/new/expandup.png'] = 'rbxassetid://14368317595',
-	['newvape/assets/new/friendstab.png'] = 'rbxassetid://14397462778',
-	['newvape/assets/new/guisettings.png'] = 'rbxassetid://14368318994',
-	['newvape/assets/new/guislider.png'] = 'rbxassetid://14368320020',
-	['newvape/assets/new/guisliderrain.png'] = 'rbxassetid://14368321228',
-	['newvape/assets/new/guiv5.png'] = 'rbxassetid://14368322199',
-	['newvape/assets/new/guivape.png'] = 'rbxassetid://14657521312',
-	['newvape/assets/new/info.png'] = 'rbxassetid://14368324807',
-	['newvape/assets/new/inventoryicon.png'] = 'rbxassetid://14928011633',
-	['newvape/assets/new/legit.png'] = 'rbxassetid://14425650534',
-	['newvape/assets/new/legittab.png'] = 'rbxassetid://14426740825',
-	['newvape/assets/new/miniicon.png'] = 'rbxassetid://14368326029',
-	['newvape/assets/new/notification.png'] = 'rbxassetid://16738721069',
-	['newvape/assets/new/overlaysicon.png'] = 'rbxassetid://14368339581',
-	['newvape/assets/new/overlaystab.png'] = 'rbxassetid://14397380433',
-	['newvape/assets/new/pin.png'] = 'rbxassetid://14368342301',
-	['newvape/assets/new/profilesicon.png'] = 'rbxassetid://14397465323',
-	['newvape/assets/new/radaricon.png'] = 'rbxassetid://14368343291',
-	['newvape/assets/new/rainbow_1.png'] = 'rbxassetid://14368344374',
-	['newvape/assets/new/rainbow_2.png'] = 'rbxassetid://14368345149',
-	['newvape/assets/new/rainbow_3.png'] = 'rbxassetid://14368345840',
-	['newvape/assets/new/rainbow_4.png'] = 'rbxassetid://14368346696',
-	['newvape/assets/new/range.png'] = 'rbxassetid://14368347435',
-	['newvape/assets/new/rangearrow.png'] = 'rbxassetid://14368348640',
-	['newvape/assets/new/rendericon.png'] = 'rbxassetid://14368350193',
-	['newvape/assets/new/rendertab.png'] = 'rbxassetid://14397373458',
-	['newvape/assets/new/search.png'] = 'rbxassetid://14425646684',
-	['newvape/assets/new/targetinfoicon.png'] = 'rbxassetid://14368354234',
-	['newvape/assets/new/targetnpc1.png'] = 'rbxassetid://14497400332',
-	['newvape/assets/new/targetnpc2.png'] = 'rbxassetid://14497402744',
-	['newvape/assets/new/targetplayers1.png'] = 'rbxassetid://14497396015',
-	['newvape/assets/new/targetplayers2.png'] = 'rbxassetid://14497397862',
-	['newvape/assets/new/targetstab.png'] = 'rbxassetid://14497393895',
-	['newvape/assets/new/textguiicon.png'] = 'rbxassetid://14368355456',
-	['newvape/assets/new/textv5.png'] = 'rbxassetid://14368357095',
-	['newvape/assets/new/textvape.png'] = 'rbxassetid://14368358200',
-	['newvape/assets/new/utilityicon.png'] = 'rbxassetid://14368359107',
-	['newvape/assets/new/vape.png'] = 'rbxassetid://14373395239',
-	['newvape/assets/new/warning.png'] = 'rbxassetid://14368361552',
-	['newvape/assets/new/worldicon.png'] = 'rbxassetid://14368362492'
+	['vapev4/assets/new/add.png'] = 'rbxassetid://14368300605',
+	['vapev4/assets/new/alert.png'] = 'rbxassetid://14368301329',
+	['vapev4/assets/new/allowedicon.png'] = 'rbxassetid://14368302000',
+	['vapev4/assets/new/allowedtab.png'] = 'rbxassetid://14368302875',
+	['vapev4/assets/new/arrowmodule.png'] = 'rbxassetid://14473354880',
+	['vapev4/assets/new/back.png'] = 'rbxassetid://14368303894',
+	['vapev4/assets/new/bind.png'] = 'rbxassetid://14368304734',
+	['vapev4/assets/new/bindbkg.png'] = 'rbxassetid://14368305655',
+	['vapev4/assets/new/blatanticon.png'] = 'rbxassetid://14368306745',
+	['vapev4/assets/new/blockedicon.png'] = 'rbxassetid://14385669108',
+	['vapev4/assets/new/blockedtab.png'] = 'rbxassetid://14385672881',
+	['vapev4/assets/new/blur.png'] = 'rbxassetid://14898786664',
+	['vapev4/assets/new/blurnotif.png'] = 'rbxassetid://16738720137',
+	['vapev4/assets/new/close.png'] = 'rbxassetid://14368309446',
+	['vapev4/assets/new/closemini.png'] = 'rbxassetid://14368310467',
+	['vapev4/assets/new/colorpreview.png'] = 'rbxassetid://14368311578',
+	['vapev4/assets/new/combaticon.png'] = 'rbxassetid://14368312652',
+	['vapev4/assets/new/customsettings.png'] = 'rbxassetid://14403726449',
+	['vapev4/assets/new/discord.png'] = '',
+	['vapev4/assets/new/dots.png'] = 'rbxassetid://14368314459',
+	['vapev4/assets/new/edit.png'] = 'rbxassetid://14368315443',
+	['vapev4/assets/new/expandicon.png'] = 'rbxassetid://14368353032',
+	['vapev4/assets/new/expandright.png'] = 'rbxassetid://14368316544',
+	['vapev4/assets/new/expandup.png'] = 'rbxassetid://14368317595',
+	['vapev4/assets/new/friendstab.png'] = 'rbxassetid://14397462778',
+	['vapev4/assets/new/guisettings.png'] = 'rbxassetid://14368318994',
+	['vapev4/assets/new/guislider.png'] = 'rbxassetid://14368320020',
+	['vapev4/assets/new/guisliderrain.png'] = 'rbxassetid://14368321228',
+	['vapev4/assets/new/guiv5.png'] = 'rbxassetid://14368322199',
+	['vapev4/assets/new/guivape.png'] = 'rbxassetid://14657521312',
+	['vapev4/assets/new/info.png'] = 'rbxassetid://14368324807',
+	['vapev4/assets/new/inventoryicon.png'] = 'rbxassetid://14928011633',
+	['vapev4/assets/new/legit.png'] = 'rbxassetid://14425650534',
+	['vapev4/assets/new/legittab.png'] = 'rbxassetid://14426740825',
+	['vapev4/assets/new/miniicon.png'] = 'rbxassetid://14368326029',
+	['vapev4/assets/new/notification.png'] = 'rbxassetid://16738721069',
+	['vapev4/assets/new/overlaysicon.png'] = 'rbxassetid://14368339581',
+	['vapev4/assets/new/overlaystab.png'] = 'rbxassetid://14397380433',
+	['vapev4/assets/new/pin.png'] = 'rbxassetid://14368342301',
+	['vapev4/assets/new/profilesicon.png'] = 'rbxassetid://14397465323',
+	['vapev4/assets/new/radaricon.png'] = 'rbxassetid://14368343291',
+	['vapev4/assets/new/rainbow_1.png'] = 'rbxassetid://14368344374',
+	['vapev4/assets/new/rainbow_2.png'] = 'rbxassetid://14368345149',
+	['vapev4/assets/new/rainbow_3.png'] = 'rbxassetid://14368345840',
+	['vapev4/assets/new/rainbow_4.png'] = 'rbxassetid://14368346696',
+	['vapev4/assets/new/range.png'] = 'rbxassetid://14368347435',
+	['vapev4/assets/new/rangearrow.png'] = 'rbxassetid://14368348640',
+	['vapev4/assets/new/rendericon.png'] = 'rbxassetid://14368350193',
+	['vapev4/assets/new/rendertab.png'] = 'rbxassetid://14397373458',
+	['vapev4/assets/new/search.png'] = 'rbxassetid://14425646684',
+	['vapev4/assets/new/targetinfoicon.png'] = 'rbxassetid://14368354234',
+	['vapev4/assets/new/targetnpc1.png'] = 'rbxassetid://14497400332',
+	['vapev4/assets/new/targetnpc2.png'] = 'rbxassetid://14497402744',
+	['vapev4/assets/new/targetplayers1.png'] = 'rbxassetid://14497396015',
+	['vapev4/assets/new/targetplayers2.png'] = 'rbxassetid://14497397862',
+	['vapev4/assets/new/targetstab.png'] = 'rbxassetid://14497393895',
+	['vapev4/assets/new/textguiicon.png'] = 'rbxassetid://14368355456',
+	['vapev4/assets/new/textv5.png'] = 'rbxassetid://14368357095',
+	['vapev4/assets/new/textvape.png'] = 'rbxassetid://14368358200',
+	['vapev4/assets/new/utilityicon.png'] = 'rbxassetid://14368359107',
+	['vapev4/assets/new/vape.png'] = 'rbxassetid://14373395239',
+	['vapev4/assets/new/warning.png'] = 'rbxassetid://14368361552',
+	['vapev4/assets/new/worldicon.png'] = 'rbxassetid://14368362492'
 }
 
 local isfile = isfile or function(file)
@@ -134,9 +138,13 @@ end
 
 local getfontsize = function(text, size, font)
 	fontsize.Text = text
-	fontsize.Size = size
+	fontsize.Size = size or 16
 	if typeof(font) == 'Font' then
 		fontsize.Font = font
+	elseif typeof(font) == 'EnumItem' then
+		fontsize.Font = Font.fromEnum(font)
+	else
+		fontsize.Font = uipallet.Font
 	end
 	return textService:GetTextBoundsAsync(fontsize)
 end
@@ -149,7 +157,7 @@ local function addBlur(parent, notif)
 	blur.Size = UDim2.new(1, 89, 1, 52)
 	blur.Position = UDim2.fromOffset(-48, -31)
 	blur.BackgroundTransparency = 1
-	blur.Image = getcustomasset('newvape/assets/new/'..(notif and 'blurnotif' or 'blur')..'.png')
+	blur.Image = getcustomasset('vapev4/assets/new/'..(notif and 'blurnotif' or 'blur')..'.png')
 	blur.ScaleType = Enum.ScaleType.Slice
 	blur.SliceCenter = Rect.new(52, 31, 261, 502)
 	blur.Parent = parent
@@ -173,7 +181,7 @@ local function addCloseButton(parent, offset)
 	close.BackgroundColor3 = Color3.new(1, 1, 1)
 	close.BackgroundTransparency = 1
 	close.AutoButtonColor = false
-	close.Image = getcustomasset('newvape/assets/new/close.png')
+	close.Image = getcustomasset('vapev4/assets/new/close.png')
 	close.ImageColor3 = color.Light(uipallet.Text, 0.2)
 	close.ImageTransparency = 0.5
 	close.Parent = parent
@@ -286,7 +294,7 @@ local function createMobileButton(buttonapi, position)
 	button.Font = Enum.Font.Gotham
 	button.Parent = mainapi.gui
 	local buttonconstraint = Instance.new('UITextSizeConstraint')
-	buttonconstraint.MaxTextSize = 16
+	buttonconstraint.MaxTextSize = 17
 	buttonconstraint.Parent = button
 	addCorner(button, UDim.new(1, 0))
 
@@ -317,7 +325,7 @@ local function downloadFile(path, func)
 	if not isfile(path) then
 		createDownloader(path)
 		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+			return game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/'..readfile('vapev4/profiles/commit.txt')..'/'..select(1, path:gsub('vapev4/', '')), true)
 		end)
 		if not suc or res == '404: Not Found' then
 			error(res)
@@ -410,7 +418,7 @@ local function removeTags(str)
 end
 
 do
-	local res = isfile('newvape/profiles/color.txt') and loadJson('newvape/profiles/color.txt')
+	local res = isfile('vapev4/profiles/color.txt') and loadJson('vapev4/profiles/color.txt')
 	if res then
 		uipallet.Main = res.Main and Color3.fromRGB(unpack(res.Main)) or uipallet.Main
 		uipallet.Text = res.Text and Color3.fromRGB(unpack(res.Text)) or uipallet.Text
@@ -517,8 +525,9 @@ components = {
 		label.Position = UDim2.fromOffset(2, 2)
 		label.BackgroundColor3 = uipallet.Main
 		label.Text = optionsettings.Name
-		label.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		label.TextSize = 16
+		label.TextColor3 = Color3.fromRGB(143, 143, 143)
+		label.TextSize = 17
+		label.TextYAlignment = Enum.TextYAlignment.Center
 		label.FontFace = uipallet.Font
 		label.Parent = bkg
 		addCorner(label, UDim.new(0, 4))
@@ -564,8 +573,8 @@ components = {
 			title.BackgroundTransparency = 1
 			title.Text = name
 			title.TextXAlignment = Enum.TextXAlignment.Left
-			title.TextColor3 = color.Dark(uipallet.Text, 0.16)
-			title.TextSize = 13
+			title.TextColor3 = Color3.fromRGB(143, 143, 143)
+			title.TextSize = 16
 			title.FontFace = uipallet.Font
 			title.Parent = slider
 			local bkg = Instance.new('Frame')
@@ -652,8 +661,8 @@ components = {
 		title.BackgroundTransparency = 1
 		title.Text = optionsettings.Name
 		title.TextXAlignment = Enum.TextXAlignment.Left
-		title.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		title.TextSize = 13
+		title.TextColor3 = Color3.fromRGB(143, 143, 143)
+		title.TextSize = 16
 		title.FontFace = uipallet.Font
 		title.Parent = slider
 		local valuebox = Instance.new('TextBox')
@@ -664,8 +673,8 @@ components = {
 		valuebox.Visible = false
 		valuebox.Text = ''
 		valuebox.TextXAlignment = Enum.TextXAlignment.Right
-		valuebox.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		valuebox.TextSize = 13
+		valuebox.TextColor3 = Color3.fromRGB(143, 143, 143)
+		valuebox.TextSize = 16
 		valuebox.FontFace = uipallet.Font
 		valuebox.ClearTextOnFocus = true
 		valuebox.Parent = slider
@@ -694,7 +703,7 @@ components = {
 		preview.Size = UDim2.fromOffset(12, 12)
 		preview.Position = UDim2.new(1, -22, 0, 10)
 		preview.BackgroundTransparency = 1
-		preview.Image = getcustomasset('newvape/assets/new/colorpreview.png')
+		preview.Image = getcustomasset('vapev4/assets/new/colorpreview.png')
 		preview.ImageColor3 = Color3.fromHSV(optionapi.Hue, optionapi.Sat, optionapi.Value)
 		preview.ImageTransparency = 1 - optionapi.Opacity
 		preview.Parent = slider
@@ -710,7 +719,7 @@ components = {
 		expand.Size = UDim2.fromOffset(9, 5)
 		expand.Position = UDim2.fromOffset(4, 4)
 		expand.BackgroundTransparency = 1
-		expand.Image = getcustomasset('newvape/assets/new/expandicon.png')
+		expand.Image = getcustomasset('vapev4/assets/new/expandicon.png')
 		expand.ImageColor3 = color.Dark(uipallet.Text, 0.43)
 		expand.Parent = expandbutton
 		local rainbow = Instance.new('TextButton')
@@ -723,17 +732,17 @@ components = {
 		local rainbow1 = Instance.new('ImageLabel')
 		rainbow1.Size = UDim2.fromOffset(12, 12)
 		rainbow1.BackgroundTransparency = 1
-		rainbow1.Image = getcustomasset('newvape/assets/new/rainbow_1.png')
+		rainbow1.Image = getcustomasset('vapev4/assets/new/rainbow_1.png')
 		rainbow1.ImageColor3 = color.Light(uipallet.Main, 0.37)
 		rainbow1.Parent = rainbow
 		local rainbow2 = rainbow1:Clone()
-		rainbow2.Image = getcustomasset('newvape/assets/new/rainbow_2.png')
+		rainbow2.Image = getcustomasset('vapev4/assets/new/rainbow_2.png')
 		rainbow2.Parent = rainbow
 		local rainbow3 = rainbow1:Clone()
-		rainbow3.Image = getcustomasset('newvape/assets/new/rainbow_3.png')
+		rainbow3.Image = getcustomasset('vapev4/assets/new/rainbow_3.png')
 		rainbow3.Parent = rainbow
 		local rainbow4 = rainbow1:Clone()
-		rainbow4.Image = getcustomasset('newvape/assets/new/rainbow_4.png')
+		rainbow4.Image = getcustomasset('vapev4/assets/new/rainbow_4.png')
 		rainbow4.Parent = rainbow
 		local knobholder = Instance.new('Frame')
 		knobholder.Name = 'Knob'
@@ -913,7 +922,7 @@ components = {
 			opSlider.Visible = satSlider.Visible
 		end)
 		expandbutton.MouseEnter:Connect(function()
-			expand.ImageColor3 = color.Dark(uipallet.Text, 0.16)
+			expand.ImageColor3 = Color3.fromRGB(143, 143, 143)
 		end)
 		expandbutton.MouseLeave:Connect(function()
 			expand.ImageColor3 = color.Dark(uipallet.Text, 0.43)
@@ -985,10 +994,11 @@ components = {
 		title.Name = 'Title'
 		title.Size = UDim2.new(1, 0, 0, 29)
 		title.BackgroundTransparency = 1
-		title.Text = '         '..optionsettings.Name..' - '..optionapi.Value
+		title.Text = optionsettings.Name..' - '..optionapi.Value
 		title.TextXAlignment = Enum.TextXAlignment.Left
-		title.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		title.TextSize = 15
+		title.TextColor3 = Color3.fromRGB(143, 143, 143)
+		title.TextSize = 17
+		title.TextYAlignment = Enum.TextYAlignment.Center
 		title.TextTruncate = Enum.TextTruncate.AtEnd
 		title.FontFace = uipallet.Font
 		title.Parent = button
@@ -998,8 +1008,8 @@ components = {
 		arrow.Size = UDim2.fromOffset(4, 8)
 		arrow.Position = UDim2.new(1, -17, 0, 11)
 		arrow.BackgroundTransparency = 1
-		arrow.Image = getcustomasset('newvape/assets/new/expandright.png')
-		arrow.ImageColor3 = Color3.fromRGB(140, 140, 140)
+		arrow.Image = getcustomasset('vapev4/assets/new/expandright.png')
+		arrow.ImageColor3 = Color3.fromRGB(143, 143, 143)
 		arrow.Rotation = 90
 		arrow.Parent = button
 		optionsettings.Function = optionsettings.Function or function() end
@@ -1054,10 +1064,10 @@ components = {
 					dropdownoption.BackgroundColor3 = uipallet.Main
 					dropdownoption.BorderSizePixel = 0
 					dropdownoption.AutoButtonColor = false
-					dropdownoption.Text = '         '..v
+					dropdownoption.Text = v
 					dropdownoption.TextXAlignment = Enum.TextXAlignment.Left
-					dropdownoption.TextColor3 = color.Dark(uipallet.Text, 0.16)
-					dropdownoption.TextSize = 15
+					dropdownoption.TextColor3 = Color3.fromRGB(143, 143, 143)
+					dropdownoption.TextSize = 17
 					dropdownoption.TextTruncate = Enum.TextTruncate.AtEnd
 					dropdownoption.FontFace = uipallet.Font
 					dropdownoption.Parent = dropdownchildren
@@ -1177,8 +1187,9 @@ components = {
 		title.BackgroundTransparency = 1
 		title.Text = optionsettings.Name
 		title.TextXAlignment = Enum.TextXAlignment.Left
-		title.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		title.TextSize = 13
+		title.TextColor3 = Color3.fromRGB(143, 143, 143)
+		title.TextSize = 17
+		title.TextYAlignment = Enum.TextYAlignment.Center
 		title.FontFace = uipallet.Font
 		title.Parent = slider
 		local valuebutton = Instance.new('TextButton')
@@ -1188,8 +1199,8 @@ components = {
 		valuebutton.BackgroundTransparency = 1
 		valuebutton.Text = optionapi.Value..(optionsettings.Suffix and ' '..(type(optionsettings.Suffix) == 'function' and optionsettings.Suffix(optionapi.Value) or optionsettings.Suffix) or '')
 		valuebutton.TextXAlignment = Enum.TextXAlignment.Right
-		valuebutton.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		valuebutton.TextSize = 13
+		valuebutton.TextColor3 = Color3.fromRGB(143, 143, 143)
+		valuebutton.TextSize = 16
 		valuebutton.FontFace = uipallet.Font
 		valuebutton.Parent = slider
 		local valuebox = Instance.new('TextBox')
@@ -1200,8 +1211,8 @@ components = {
 		valuebox.Visible = false
 		valuebox.Text = optionapi.Value
 		valuebox.TextXAlignment = Enum.TextXAlignment.Right
-		valuebox.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		valuebox.TextSize = 13
+		valuebox.TextColor3 = Color3.fromRGB(143, 143, 143)
+		valuebox.TextSize = 16
 		valuebox.FontFace = uipallet.Font
 		valuebox.ClearTextOnFocus = false
 		valuebox.Parent = slider
@@ -1370,8 +1381,8 @@ components = {
 		buttontitle.BackgroundTransparency = 1
 		buttontitle.Text = 'Target:'
 		buttontitle.TextXAlignment = Enum.TextXAlignment.Left
-		buttontitle.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		buttontitle.TextSize = 17
+		buttontitle.TextColor3 = Color3.fromRGB(143, 143, 143)
+		buttontitle.TextSize = 16
 		buttontitle.TextTruncate = Enum.TextTruncate.AtEnd
 		buttontitle.FontFace = uipallet.Font
 		buttontitle.Parent = button
@@ -1379,7 +1390,7 @@ components = {
 		items.Name = 'Items'
 		items.Position = UDim2.fromOffset(5, 21)
 		items.Text = 'Ignore none'
-		items.TextColor3 = color.Dark(uipallet.Text, 0.16)
+		items.TextColor3 = Color3.fromRGB(143, 143, 143)
 		items.TextSize = 13
 		items.Parent = button
 		addCorner(button, UDim.new(0, 4))
@@ -1409,7 +1420,7 @@ components = {
 		icon.Size = UDim2.fromOffset(18, 12)
 		icon.Position = UDim2.fromOffset(10, 15)
 		icon.BackgroundTransparency = 1
-		icon.Image = getcustomasset('newvape/assets/new/targetstab.png')
+		icon.Image = getcustomasset('vapev4/assets/new/targetstab.png')
 		icon.Parent = window
 		local title = Instance.new('TextLabel')
 		title.Name = 'Title'
@@ -1419,7 +1430,7 @@ components = {
 		title.Text = 'Target settings'
 		title.TextXAlignment = Enum.TextXAlignment.Left
 		title.TextColor3 = uipallet.Text
-		title.TextSize = 15
+		title.TextSize = 16
 		title.FontFace = uipallet.Font
 		title.Parent = window
 		local close = addCloseButton(window)
@@ -1471,20 +1482,20 @@ components = {
 		
 		optionapi.Players = components.TargetsButton({
 			Position = UDim2.fromOffset(11, 45),
-			Icon = getcustomasset('newvape/assets/new/targetplayers1.png'),
+			Icon = getcustomasset('vapev4/assets/new/targetplayers1.png'),
 			IconSize = UDim2.fromOffset(15, 16),
 			IconParent = tool,
-			ToolIcon = getcustomasset('newvape/assets/new/targetplayers2.png'),
+			ToolIcon = getcustomasset('vapev4/assets/new/targetplayers2.png'),
 			ToolSize = UDim2.fromOffset(11, 12),
 			Tooltip = 'Players',
 			Function = optionsettings.Function
 		}, window, tool)
 		optionapi.NPCs = components.TargetsButton({
 			Position = UDim2.fromOffset(112, 45),
-			Icon = getcustomasset('newvape/assets/new/targetnpc1.png'),
+			Icon = getcustomasset('vapev4/assets/new/targetnpc1.png'),
 			IconSize = UDim2.fromOffset(12, 16),
 			IconParent = tool,
-			ToolIcon = getcustomasset('newvape/assets/new/targetnpc2.png'),
+			ToolIcon = getcustomasset('vapev4/assets/new/targetnpc2.png'),
 			ToolSize = UDim2.fromOffset(9, 12),
 			Tooltip = 'NPCs',
 			Function = optionsettings.Function
@@ -1671,7 +1682,8 @@ components = {
 		title.Text = optionsettings.Name
 		title.TextXAlignment = Enum.TextXAlignment.Left
 		title.TextColor3 = uipallet.Text
-		title.TextSize = 14
+		title.TextSize = 15
+		title.TextYAlignment = Enum.TextYAlignment.Center
 		title.FontFace = uipallet.Font
 		title.Parent = textbox
 		local bkg = Instance.new('Frame')
@@ -1688,9 +1700,9 @@ components = {
 		box.Text = optionsettings.Default or ''
 		box.PlaceholderText = optionsettings.Placeholder or 'Click to set'
 		box.TextXAlignment = Enum.TextXAlignment.Left
-		box.TextColor3 = color.Dark(uipallet.Text, 0.16)
+		box.TextColor3 = Color3.fromRGB(143, 143, 143)
 		box.PlaceholderColor3 = color.Dark(uipallet.Text, 0.31)
-		box.TextSize = 14
+		box.TextSize = 15
 		box.FontFace = uipallet.Font
 		box.ClearTextOnFocus = false
 		box.Parent = bkg
@@ -1768,7 +1780,7 @@ components = {
 		buttonicon.Size = UDim2.fromOffset(14, 12)
 		buttonicon.Position = UDim2.fromOffset(10, 14)
 		buttonicon.BackgroundTransparency = 1
-		buttonicon.Image = optionsettings.Icon or getcustomasset('newvape/assets/new/allowedicon.png')
+		buttonicon.Image = optionsettings.Icon or getcustomasset('vapev4/assets/new/allowedicon.png')
 		buttonicon.Parent = button
 		local buttontitle = Instance.new('TextLabel')
 		buttontitle.Name = 'Title'
@@ -1777,7 +1789,7 @@ components = {
 		buttontitle.BackgroundTransparency = 1
 		buttontitle.Text = optionsettings.Name
 		buttontitle.TextXAlignment = Enum.TextXAlignment.Left
-		buttontitle.TextColor3 = color.Dark(uipallet.Text, 0.16)
+		buttontitle.TextColor3 = Color3.fromRGB(143, 143, 143)
 		buttontitle.TextSize = 17
 		buttontitle.TextTruncate = Enum.TextTruncate.AtEnd
 		buttontitle.FontFace = uipallet.Font
@@ -1814,7 +1826,7 @@ components = {
 		icon.Size = optionsettings.TabSize or UDim2.fromOffset(19, 16)
 		icon.Position = UDim2.fromOffset(10, 13)
 		icon.BackgroundTransparency = 1
-		icon.Image = optionsettings.Tab or getcustomasset('newvape/assets/new/allowedtab.png')
+		icon.Image = optionsettings.Tab or getcustomasset('vapev4/assets/new/allowedtab.png')
 		icon.Parent = window
 		local title = Instance.new('TextLabel')
 		title.Name = 'Title'
@@ -1848,7 +1860,7 @@ components = {
 		addvalue.PlaceholderText = optionsettings.Placeholder or 'Add entry...'
 		addvalue.TextXAlignment = Enum.TextXAlignment.Left
 		addvalue.TextColor3 = Color3.new(1, 1, 1)
-		addvalue.TextSize = 17
+		addvalue.TextSize = 16
 		addvalue.FontFace = uipallet.Font
 		addvalue.ClearTextOnFocus = false
 		addvalue.Parent = addbkg
@@ -1857,7 +1869,7 @@ components = {
 		addbutton.Size = UDim2.fromOffset(16, 16)
 		addbutton.Position = UDim2.new(1, -26, 0, 8)
 		addbutton.BackgroundTransparency = 1
-		addbutton.Image = getcustomasset('newvape/assets/new/add.png')
+		addbutton.Image = getcustomasset('vapev4/assets/new/add.png')
 		addbutton.ImageColor3 = optionsettings.Color
 		addbutton.ImageTransparency = 0.3
 		addbutton.Parent = addbkg
@@ -1950,8 +1962,8 @@ components = {
 				objecttitle.BackgroundTransparency = 1
 				objecttitle.Text = v
 				objecttitle.TextXAlignment = Enum.TextXAlignment.Left
-				objecttitle.TextColor3 = color.Dark(uipallet.Text, 0.16)
-				objecttitle.TextSize = 17
+				objecttitle.TextColor3 = Color3.fromRGB(143, 143, 143)
+				objecttitle.TextSize = 16
 				objecttitle.FontFace = uipallet.Font
 				objecttitle.Parent = object
 				local close = Instance.new('ImageButton')
@@ -1961,7 +1973,7 @@ components = {
 				close.BackgroundColor3 = Color3.new(1, 1, 1)
 				close.BackgroundTransparency = 1
 				close.AutoButtonColor = false
-				close.Image = getcustomasset('newvape/assets/new/closemini.png')
+				close.Image = getcustomasset('vapev4/assets/new/closemini.png')
 				close.ImageColor3 = color.Light(uipallet.Text, 0.2)
 				close.ImageTransparency = 0.5
 				close.Parent = object
@@ -2097,8 +2109,9 @@ components = {
 		toggle.Visible = optionsettings.Visible == nil or optionsettings.Visible
 		toggle.Text = '          '..optionsettings.Name
 		toggle.TextXAlignment = Enum.TextXAlignment.Left
-		toggle.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		toggle.TextSize = 16
+		toggle.TextColor3 = Color3.fromRGB(143, 143, 143)
+		toggle.TextSize = 17
+		toggle.TextYAlignment = Enum.TextYAlignment.Center
 		toggle.FontFace = uipallet.Font
 		toggle.Parent = children
 		addTooltip(toggle, optionsettings.Tooltip)
@@ -2199,7 +2212,7 @@ components = {
 		title.BackgroundTransparency = 1
 		title.Text = optionsettings.Name
 		title.TextXAlignment = Enum.TextXAlignment.Left
-		title.TextColor3 = color.Dark(uipallet.Text, 0.16)
+		title.TextColor3 = Color3.fromRGB(143, 143, 143)
 		title.TextSize = 13
 		title.FontFace = uipallet.Font
 		title.Parent = slider
@@ -2210,7 +2223,7 @@ components = {
 		valuebutton.BackgroundTransparency = 1
 		valuebutton.Text = optionapi.ValueMax
 		valuebutton.TextXAlignment = Enum.TextXAlignment.Right
-		valuebutton.TextColor3 = color.Dark(uipallet.Text, 0.16)
+		valuebutton.TextColor3 = Color3.fromRGB(143, 143, 143)
 		valuebutton.TextSize = 13
 		valuebutton.FontFace = uipallet.Font
 		valuebutton.Parent = slider
@@ -2226,7 +2239,7 @@ components = {
 		valuebox.Visible = false
 		valuebox.Text = optionapi.ValueMin
 		valuebox.TextXAlignment = Enum.TextXAlignment.Right
-		valuebox.TextColor3 = color.Dark(uipallet.Text, 0.16)
+		valuebox.TextColor3 = Color3.fromRGB(143, 143, 143)
 		valuebox.TextSize = 13
 		valuebox.FontFace = uipallet.Font
 		valuebox.ClearTextOnFocus = false
@@ -2261,7 +2274,7 @@ components = {
 		knob.Position = UDim2.fromScale(0.5, 0.5)
 		knob.AnchorPoint = Vector2.new(0.5, 0.5)
 		knob.BackgroundTransparency = 1
-		knob.Image = getcustomasset('newvape/assets/new/range.png')
+		knob.Image = getcustomasset('vapev4/assets/new/range.png')
 		knob.ImageColor3 = Color3.fromHSV(mainapi.GUIColor.Hue, mainapi.GUIColor.Sat, mainapi.GUIColor.Value)
 		knob.Parent = knobholder
 		local knobholdermax = knobholder:Clone()
@@ -2274,7 +2287,7 @@ components = {
 		arrow.Size = UDim2.fromOffset(12, 6)
 		arrow.Position = UDim2.new(1, -56, 0, 10)
 		arrow.BackgroundTransparency = 1
-		arrow.Image = getcustomasset('newvape/assets/new/rangearrow.png')
+		arrow.Image = getcustomasset('vapev4/assets/new/rangearrow.png')
 		arrow.ImageColor3 = color.Light(uipallet.Main, 0.14)
 		arrow.Parent = slider
 		optionsettings.Function = optionsettings.Function or function() end
@@ -2412,7 +2425,7 @@ components = {
 			label.Text = '          '..text:upper()
 			label.TextXAlignment = Enum.TextXAlignment.Left
 			label.TextColor3 = color.Dark(uipallet.Text, 0.43)
-			label.TextSize = 11
+			label.TextSize = 13
 			label.FontFace = uipallet.Font
 			label.Parent = children
 			divider.Position = UDim2.fromOffset(0, 26)
@@ -2486,7 +2499,7 @@ function mainapi:CreateGUI()
 	logo.Size = UDim2.fromOffset(62, 18)
 	logo.Position = UDim2.fromOffset(11, 10)
 	logo.BackgroundTransparency = 1
-	logo.Image = getcustomasset('newvape/assets/new/guivape.png')
+	logo.Image = getcustomasset('vapev4/assets/new/guivape.png')
 	logo.ImageColor3 = select(3, uipallet.Main:ToHSV()) > 0.5 and uipallet.Text or Color3.new(1, 1, 1)
 	logo.Parent = window
 	local logov4 = Instance.new('ImageLabel')
@@ -2494,7 +2507,7 @@ function mainapi:CreateGUI()
 	logov4.Size = UDim2.fromOffset(28, 16)
 	logov4.Position = UDim2.new(1, 1, 0, 1)
 	logov4.BackgroundTransparency = 1
-	logov4.Image = getcustomasset('newvape/assets/new/guiv5.png')
+	logov4.Image = getcustomasset('vapev4/assets/new/guiv5.png')
 	logov4.Parent = logo
 	local children = Instance.new('Frame')
 	children.Name = 'Children'
@@ -2518,14 +2531,14 @@ function mainapi:CreateGUI()
 	settingsicon.Size = UDim2.fromOffset(14, 14)
 	settingsicon.Position = UDim2.fromOffset(15, 12)
 	settingsicon.BackgroundTransparency = 1
-	settingsicon.Image = getcustomasset('newvape/assets/new/guisettings.png')
+	settingsicon.Image = getcustomasset('vapev4/assets/new/guisettings.png')
 	settingsicon.ImageColor3 = color.Light(uipallet.Main, 0.37)
 	settingsicon.Parent = settingsbutton
 	local discordbutton = Instance.new('ImageButton')
 	discordbutton.Size = UDim2.fromOffset(16, 16)
 	discordbutton.Position = UDim2.new(1, -56, 0, 11)
 	discordbutton.BackgroundTransparency = 1
-	discordbutton.Image = getcustomasset('newvape/assets/new/discord.png')
+	discordbutton.Image = getcustomasset('vapev4/assets/new/discord.png')
 	discordbutton.Parent = window
 	addTooltip(discordbutton, 'Join discord')
 	local settingspane = Instance.new('TextButton')
@@ -2543,7 +2556,7 @@ function mainapi:CreateGUI()
 	title.Text = 'Settings'
 	title.TextXAlignment = Enum.TextXAlignment.Left
 	title.TextColor3 = uipallet.Text
-	title.TextSize = 15
+	title.TextSize = 16
 	title.FontFace = uipallet.Font
 	title.Parent = settingspane
 	local close = addCloseButton(settingspane)
@@ -2552,7 +2565,7 @@ function mainapi:CreateGUI()
 	back.Size = UDim2.fromOffset(16, 16)
 	back.Position = UDim2.fromOffset(11, 13)
 	back.BackgroundTransparency = 1
-	back.Image = getcustomasset('newvape/assets/new/back.png')
+	back.Image = getcustomasset('vapev4/assets/new/back.png')
 	back.ImageColor3 = color.Light(uipallet.Main, 0.37)
 	back.Parent = settingspane
 	local settingsversion = Instance.new('TextLabel')
@@ -2561,7 +2574,7 @@ function mainapi:CreateGUI()
 	settingsversion.Position = UDim2.new(0, 0, 1, -16)
 	settingsversion.BackgroundTransparency = 1
 	settingsversion.Text = 'Vape '..mainapi.Version..' '..(
-		isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt'):sub(1, 6) or ''
+		isfile('vapev4/profiles/commit.txt') and readfile('vapev4/profiles/commit.txt'):sub(1, 6) or ''
 	)..' '
 	settingsversion.TextColor3 = color.Dark(uipallet.Text, 0.43)
 	settingsversion.TextXAlignment = Enum.TextXAlignment.Right
@@ -2592,7 +2605,7 @@ function mainapi:CreateGUI()
 		button.AutoButtonColor = false
 		button.Text = '          Rebind GUI'
 		button.TextXAlignment = Enum.TextXAlignment.Left
-		button.TextColor3 = color.Dark(uipallet.Text, 0.16)
+		button.TextColor3 = Color3.fromRGB(143, 143, 143)
 		button.TextSize = 16
 		button.FontFace = uipallet.Font
 		button.Parent = settingschildren
@@ -2615,18 +2628,18 @@ function mainapi:CreateGUI()
 		icon.Size = UDim2.fromOffset(12, 12)
 		icon.Position = UDim2.new(0.5, -6, 0, 5)
 		icon.BackgroundTransparency = 1
-		icon.Image = getcustomasset('newvape/assets/new/bind.png')
+		icon.Image = getcustomasset('vapev4/assets/new/bind.png')
 		icon.ImageColor3 = color.Dark(uipallet.Text, 0.43)
 		icon.Parent = bind
 		local label = Instance.new('TextLabel')
 		label.Name = 'Text'
 		label.Size = UDim2.fromScale(1, 1)
-		label.Position = UDim2.fromOffset(0, 1)
+		label.Position = UDim2.fromOffset(0, 0)
 		label.BackgroundTransparency = 1
 		label.Visible = false
 		label.Text = ''
 		label.TextColor3 = color.Dark(uipallet.Text, 0.43)
-		label.TextSize = 14
+		label.TextSize = 15
 		label.FontFace = uipallet.Font
 		label.Parent = bind
 
@@ -2648,13 +2661,13 @@ function mainapi:CreateGUI()
 		bind.MouseEnter:Connect(function()
 			label.Visible = false
 			icon.Visible = not label.Visible
-			icon.Image = getcustomasset('newvape/assets/new/edit.png')
-			icon.ImageColor3 = color.Dark(uipallet.Text, 0.16)
+			icon.Image = getcustomasset('vapev4/assets/new/edit.png')
+			icon.ImageColor3 = Color3.fromRGB(143, 143, 143)
 		end)
 		bind.MouseLeave:Connect(function()
 			label.Visible = true
 			icon.Visible = not label.Visible
-			icon.Image = getcustomasset('newvape/assets/new/bind.png')
+			icon.Image = getcustomasset('vapev4/assets/new/bind.png')
 			icon.ImageColor3 = color.Dark(uipallet.Text, 0.43)
 		end)
 		bind.MouseButton1Click:Connect(function()
@@ -2680,8 +2693,8 @@ function mainapi:CreateGUI()
 		button.AutoButtonColor = false
 		button.Text = (categorysettings.Icon and '                                 ' or '             ')..categorysettings.Name
 		button.TextXAlignment = Enum.TextXAlignment.Left
-		button.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		button.TextSize = 16
+		button.TextColor3 = Color3.fromRGB(143, 143, 143)
+		button.TextSize = 17
 		button.FontFace = uipallet.Font
 		button.Parent = children
 		local icon
@@ -2692,7 +2705,7 @@ function mainapi:CreateGUI()
 			icon.Position = UDim2.fromOffset(13, 13)
 			icon.BackgroundTransparency = 1
 			icon.Image = categorysettings.Icon
-			icon.ImageColor3 = color.Dark(uipallet.Text, 0.16)
+			icon.ImageColor3 = Color3.fromRGB(143, 143, 143)
 			icon.Parent = button
 		end
 		if categorysettings.Name == 'Profiles' then
@@ -2715,7 +2728,7 @@ function mainapi:CreateGUI()
 		arrow.Size = UDim2.fromOffset(4, 8)
 		arrow.Position = UDim2.new(1, -20, 0, 16)
 		arrow.BackgroundTransparency = 1
-		arrow.Image = getcustomasset('newvape/assets/new/expandright.png')
+		arrow.Image = getcustomasset('vapev4/assets/new/expandright.png')
 		arrow.ImageColor3 = color.Light(uipallet.Main, 0.37)
 		arrow.Parent = button
 		optionapi.Name = categorysettings.Name
@@ -2744,8 +2757,8 @@ function mainapi:CreateGUI()
 		end)
 		button.MouseLeave:Connect(function()
 			if not optionapi.Enabled then
-				button.TextColor3 = color.Dark(uipallet.Text, 0.16)
-				if buttonicon then buttonicon.ImageColor3 = color.Dark(uipallet.Text, 0.16) end
+				button.TextColor3 = Color3.fromRGB(143, 143, 143)
+				if buttonicon then buttonicon.ImageColor3 = Color3.fromRGB(143, 143, 143) end
 				button.BackgroundColor3 = uipallet.Main
 			end
 		end)
@@ -2777,7 +2790,7 @@ function mainapi:CreateGUI()
 		button.Position = UDim2.new(1, -29, 0, 7)
 		button.BackgroundTransparency = 1
 		button.AutoButtonColor = false
-		button.Image = getcustomasset('newvape/assets/new/overlaysicon.png')
+		button.Image = getcustomasset('vapev4/assets/new/overlaysicon.png')
 		button.ImageColor3 = color.Light(uipallet.Main, 0.37)
 		button.Parent = bar
 		addCorner(button, UDim.new(1, 0))
@@ -2804,7 +2817,7 @@ function mainapi:CreateGUI()
 		icon.Size = UDim2.fromOffset(14, 12)
 		icon.Position = UDim2.fromOffset(10, 13)
 		icon.BackgroundTransparency = 1
-		icon.Image = getcustomasset('newvape/assets/new/overlaystab.png')
+		icon.Image = getcustomasset('vapev4/assets/new/overlaystab.png')
 		icon.ImageColor3 = uipallet.Text
 		icon.Parent = window
 		local title = Instance.new('TextLabel')
@@ -2815,7 +2828,7 @@ function mainapi:CreateGUI()
 		title.Text = 'Overlays'
 		title.TextXAlignment = Enum.TextXAlignment.Left
 		title.TextColor3 = uipallet.Text
-		title.TextSize = 17
+		title.TextSize = 16
 		title.FontFace = uipallet.Font
 		title.Parent = window
 		local close = addCloseButton(window, 7)
@@ -2849,7 +2862,7 @@ function mainapi:CreateGUI()
 			toggle.AutoButtonColor = false
 			toggle.Text = string.rep(' ', 33 * scale.Scale)..togglesettings.Name
 			toggle.TextXAlignment = Enum.TextXAlignment.Left
-			toggle.TextColor3 = color.Dark(uipallet.Text, 0.16)
+			toggle.TextColor3 = Color3.fromRGB(143, 143, 143)
 			toggle.TextSize = 16
 			toggle.FontFace = uipallet.Font
 			toggle.Parent = childrentoggle
@@ -2987,7 +3000,7 @@ function mainapi:CreateGUI()
 		button.AutoButtonColor = false
 		button.Text = '          '..categorysettings.Name
 		button.TextXAlignment = Enum.TextXAlignment.Left
-		button.TextColor3 = color.Dark(uipallet.Text, 0.16)
+		button.TextColor3 = Color3.fromRGB(143, 143, 143)
 		button.TextSize = 16
 		button.FontFace = uipallet.Font
 		button.Parent = settingschildren
@@ -2996,7 +3009,7 @@ function mainapi:CreateGUI()
 		arrow.Size = UDim2.fromOffset(4, 8)
 		arrow.Position = UDim2.new(1, -20, 0, 16)
 		arrow.BackgroundTransparency = 1
-		arrow.Image = getcustomasset('newvape/assets/new/expandright.png')
+		arrow.Image = getcustomasset('vapev4/assets/new/expandright.png')
 		arrow.ImageColor3 = color.Light(uipallet.Main, 0.37)
 		arrow.Parent = button
 		local settingspane = Instance.new('TextButton')
@@ -3014,7 +3027,7 @@ function mainapi:CreateGUI()
 		title.Text = categorysettings.Name
 		title.TextXAlignment = Enum.TextXAlignment.Left
 		title.TextColor3 = uipallet.Text
-		title.TextSize = 15
+		title.TextSize = 16
 		title.FontFace = uipallet.Font
 		title.Parent = settingspane
 		local close = addCloseButton(settingspane)
@@ -3023,7 +3036,7 @@ function mainapi:CreateGUI()
 		back.Size = UDim2.fromOffset(16, 16)
 		back.Position = UDim2.fromOffset(11, 13)
 		back.BackgroundTransparency = 1
-		back.Image = getcustomasset('newvape/assets/new/back.png')
+		back.Image = getcustomasset('vapev4/assets/new/back.png')
 		back.ImageColor3 = color.Light(uipallet.Main, 0.37)
 		back.Parent = settingspane
 		addCorner(settingspane)
@@ -3066,7 +3079,7 @@ function mainapi:CreateGUI()
 			button.BackgroundColor3 = color.Light(uipallet.Main, 0.02)
 		end)
 		button.MouseLeave:Connect(function()
-			button.TextColor3 = color.Dark(uipallet.Text, 0.16)
+			button.TextColor3 = Color3.fromRGB(143, 143, 143)
 			button.BackgroundColor3 = uipallet.Main
 		end)
 		button.MouseButton1Click:Connect(function()
@@ -3136,8 +3149,9 @@ function mainapi:CreateGUI()
 			title.BackgroundTransparency = 1
 			title.Text = name
 			title.TextXAlignment = Enum.TextXAlignment.Left
-			title.TextColor3 = color.Dark(uipallet.Text, 0.16)
-			title.TextSize = 13
+			title.TextColor3 = Color3.fromRGB(143, 143, 143)
+			title.TextSize = 17
+			title.TextYAlignment = Enum.TextYAlignment.Center
 			title.FontFace = uipallet.Font
 			title.Parent = slider
 			local holder = Instance.new('Frame')
@@ -3178,8 +3192,8 @@ function mainapi:CreateGUI()
 				reset.Position = UDim2.new(1, -52, 0, 5)
 				reset.BackgroundTransparency = 1
 				reset.Text = 'RESET'
-				reset.TextColor3 = color.Dark(uipallet.Text, 0.16)
-				reset.TextSize = 13
+				reset.TextColor3 = Color3.fromRGB(143, 143, 143)
+				reset.TextSize = 15
 				reset.FontFace = uipallet.Font
 				reset.Parent = slider
 				reset.MouseButton1Click:Connect(function()
@@ -3245,8 +3259,9 @@ function mainapi:CreateGUI()
 		title.BackgroundTransparency = 1
 		title.Text = optionsettings.Name
 		title.TextXAlignment = Enum.TextXAlignment.Left
-		title.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		title.TextSize = 13
+		title.TextColor3 = Color3.fromRGB(143, 143, 143)
+		title.TextSize = 17
+		title.TextYAlignment = Enum.TextYAlignment.Center
 		title.FontFace = uipallet.Font
 		title.Parent = slider
 		local holder = Instance.new('Frame')
@@ -3271,7 +3286,7 @@ function mainapi:CreateGUI()
 		preview.Size = UDim2.fromOffset(12, 12)
 		preview.Position = UDim2.new(1, -22, 0, 10)
 		preview.BackgroundTransparency = 1
-		preview.Image = getcustomasset('newvape/assets/new/colorpreview.png')
+		preview.Image = getcustomasset('vapev4/assets/new/colorpreview.png')
 		preview.ImageColor3 = Color3.fromHSV(optionapi.Hue, 1, 1)
 		preview.Parent = slider
 		local valuebox = Instance.new('TextBox')
@@ -3282,8 +3297,8 @@ function mainapi:CreateGUI()
 		valuebox.Visible = false
 		valuebox.Text = ''
 		valuebox.TextXAlignment = Enum.TextXAlignment.Right
-		valuebox.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		valuebox.TextSize = 13
+		valuebox.TextColor3 = Color3.fromRGB(143, 143, 143)
+		valuebox.TextSize = 16
 		valuebox.FontFace = uipallet.Font
 		valuebox.ClearTextOnFocus = true
 		valuebox.Parent = slider
@@ -3299,7 +3314,7 @@ function mainapi:CreateGUI()
 		expandicon.Size = UDim2.fromOffset(9, 5)
 		expandicon.Position = UDim2.fromOffset(4, 4)
 		expandicon.BackgroundTransparency = 1
-		expandicon.Image = getcustomasset('newvape/assets/new/expandicon.png')
+		expandicon.Image = getcustomasset('vapev4/assets/new/expandicon.png')
 		expandicon.ImageColor3 = color.Dark(uipallet.Text, 0.43)
 		expandicon.Parent = expandbutton
 		local rainbow = Instance.new('TextButton')
@@ -3312,24 +3327,24 @@ function mainapi:CreateGUI()
 		local rainbow1 = Instance.new('ImageLabel')
 		rainbow1.Size = UDim2.fromOffset(12, 12)
 		rainbow1.BackgroundTransparency = 1
-		rainbow1.Image = getcustomasset('newvape/assets/new/rainbow_1.png')
+		rainbow1.Image = getcustomasset('vapev4/assets/new/rainbow_1.png')
 		rainbow1.ImageColor3 = color.Light(uipallet.Main, 0.37)
 		rainbow1.Parent = rainbow
 		local rainbow2 = rainbow1:Clone()
-		rainbow2.Image = getcustomasset('newvape/assets/new/rainbow_2.png')
+		rainbow2.Image = getcustomasset('vapev4/assets/new/rainbow_2.png')
 		rainbow2.Parent = rainbow
 		local rainbow3 = rainbow1:Clone()
-		rainbow3.Image = getcustomasset('newvape/assets/new/rainbow_3.png')
+		rainbow3.Image = getcustomasset('vapev4/assets/new/rainbow_3.png')
 		rainbow3.Parent = rainbow
 		local rainbow4 = rainbow1:Clone()
-		rainbow4.Image = getcustomasset('newvape/assets/new/rainbow_4.png')
+		rainbow4.Image = getcustomasset('vapev4/assets/new/rainbow_4.png')
 		rainbow4.Parent = rainbow
 		local knob = Instance.new('ImageLabel')
 		knob.Name = 'Knob'
 		knob.Size = UDim2.fromOffset(26, 12)
 		knob.Position = UDim2.fromOffset(slidercolorpos[4] - 3, -5)
 		knob.BackgroundTransparency = 1
-		knob.Image = getcustomasset('newvape/assets/new/guislider.png')
+		knob.Image = getcustomasset('vapev4/assets/new/guislider.png')
 		knob.ImageColor3 = slidercolors[4]
 		knob.Parent = holder
 		optionsettings.Function = optionsettings.Function or function() end
@@ -3346,8 +3361,8 @@ function mainapi:CreateGUI()
 			ColorSequenceKeypoint.new(0, Color3.fromHSV(0, 0, 0)),
 			ColorSequenceKeypoint.new(1, Color3.fromHSV(optionapi.Hue, optionapi.Sat, 1))
 		}))
-		local normalknob = getcustomasset('newvape/assets/new/guislider.png')
-		local rainbowknob = getcustomasset('newvape/assets/new/guisliderrain.png')
+		local normalknob = getcustomasset('vapev4/assets/new/guislider.png')
+		local rainbowknob = getcustomasset('vapev4/assets/new/guisliderrain.png')
 		local rainbowthread
 
 		function optionapi:Save(tab)
@@ -3478,7 +3493,7 @@ function mainapi:CreateGUI()
 		end
 
 		expandbutton.MouseEnter:Connect(function()
-			expandicon.ImageColor3 = color.Dark(uipallet.Text, 0.16)
+			expandicon.ImageColor3 = Color3.fromRGB(143, 143, 143)
 		end)
 		expandbutton.MouseLeave:Connect(function()
 			expandicon.ImageColor3 = color.Dark(uipallet.Text, 0.43)
@@ -3655,7 +3670,7 @@ function mainapi:CreateCategory(categorysettings)
 	title.Text = categorysettings.Name
 	title.TextXAlignment = Enum.TextXAlignment.Left
 	title.TextColor3 = uipallet.Text
-	title.TextSize = 15
+	title.TextSize = 16
 	title.FontFace = uipallet.Font
 	title.Parent = window
 	local arrowbutton = Instance.new('TextButton')
@@ -3670,8 +3685,8 @@ function mainapi:CreateCategory(categorysettings)
 	arrow.Size = UDim2.fromOffset(9, 4)
 	arrow.Position = UDim2.fromOffset(20, 18)
 	arrow.BackgroundTransparency = 1
-	arrow.Image = getcustomasset('newvape/assets/new/expandup.png')
-	arrow.ImageColor3 = Color3.fromRGB(140, 140, 140)
+	arrow.Image = getcustomasset('vapev4/assets/new/expandup.png')
+	arrow.ImageColor3 = Color3.fromRGB(143, 143, 143)
 	arrow.Rotation = 180
 	arrow.Parent = arrowbutton
 	local children = Instance.new('ScrollingFrame')
@@ -3720,8 +3735,8 @@ function mainapi:CreateCategory(categorysettings)
 		modulebutton.AutoButtonColor = false
 		modulebutton.Text = '            '..modulesettings.Name
 		modulebutton.TextXAlignment = Enum.TextXAlignment.Left
-		modulebutton.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		modulebutton.TextSize = 16
+		modulebutton.TextColor3 = Color3.fromRGB(143, 143, 143)
+		modulebutton.TextSize = 17
 		modulebutton.FontFace = uipallet.Font
 		modulebutton.Parent = children
 		local gradient = Instance.new('UIGradient')
@@ -3748,7 +3763,7 @@ function mainapi:CreateCategory(categorysettings)
 		bindicon.Size = UDim2.fromOffset(12, 12)
 		bindicon.Position = UDim2.new(0.5, -6, 0, 5)
 		bindicon.BackgroundTransparency = 1
-		bindicon.Image = getcustomasset('newvape/assets/new/bind.png')
+		bindicon.Image = getcustomasset('vapev4/assets/new/bind.png')
 		bindicon.ImageColor3 = color.Dark(uipallet.Text, 0.43)
 		bindicon.Parent = bind
 		local bindtext = Instance.new('TextLabel')
@@ -3758,7 +3773,7 @@ function mainapi:CreateCategory(categorysettings)
 		bindtext.Visible = false
 		bindtext.Text = ''
 		bindtext.TextColor3 = color.Dark(uipallet.Text, 0.43)
-		bindtext.TextSize = 14
+		bindtext.TextSize = 16
 		bindtext.FontFace = uipallet.Font
 		bindtext.Parent = bind
 		local bindcover = Instance.new('ImageLabel')
@@ -3766,7 +3781,7 @@ function mainapi:CreateCategory(categorysettings)
 		bindcover.Size = UDim2.fromOffset(154, 40)
 		bindcover.BackgroundTransparency = 1
 		bindcover.Visible = false
-		bindcover.Image = getcustomasset('newvape/assets/new/bindbkg.png')
+		bindcover.Image = getcustomasset('vapev4/assets/new/bindbkg.png')
 		bindcover.ScaleType = Enum.ScaleType.Slice
 		bindcover.SliceCenter = Rect.new(0, 0, 141, 40)
 		bindcover.Parent = modulebutton
@@ -3792,7 +3807,7 @@ function mainapi:CreateCategory(categorysettings)
 		dots.Size = UDim2.fromOffset(3, 16)
 		dots.Position = UDim2.fromOffset(4, 12)
 		dots.BackgroundTransparency = 1
-		dots.Image = getcustomasset('newvape/assets/new/dots.png')
+		dots.Image = getcustomasset('vapev4/assets/new/dots.png')
 		dots.ImageColor3 = color.Light(uipallet.Main, 0.37)
 		dots.Parent = dotsbutton
 		modulechildren.Name = modulesettings.Name..'Children'
@@ -3853,7 +3868,7 @@ function mainapi:CreateCategory(categorysettings)
 			self.Enabled = not self.Enabled
 			divider.Visible = self.Enabled
 			gradient.Enabled = self.Enabled
-			modulebutton.TextColor3 = (hovered or modulechildren.Visible) and uipallet.Text or color.Dark(uipallet.Text, 0.16)
+			modulebutton.TextColor3 = (hovered or modulechildren.Visible) and uipallet.Text or Color3.fromRGB(143, 143, 143)
 			modulebutton.BackgroundColor3 = (hovered or modulechildren.Visible) and color.Light(uipallet.Main, 0.02) or uipallet.Main
 			dots.ImageColor3 = self.Enabled and Color3.fromRGB(50, 50, 50) or color.Light(uipallet.Main, 0.37)
 			bindicon.ImageColor3 = color.Dark(uipallet.Text, 0.43)
@@ -3879,13 +3894,13 @@ function mainapi:CreateCategory(categorysettings)
 		bind.MouseEnter:Connect(function()
 			bindtext.Visible = false
 			bindicon.Visible = not bindtext.Visible
-			bindicon.Image = getcustomasset('newvape/assets/new/edit.png')
-			if not moduleapi.Enabled then bindicon.ImageColor3 = color.Dark(uipallet.Text, 0.16) end
+			bindicon.Image = getcustomasset('vapev4/assets/new/edit.png')
+			if not moduleapi.Enabled then bindicon.ImageColor3 = Color3.fromRGB(143, 143, 143) end
 		end)
 		bind.MouseLeave:Connect(function()
 			bindtext.Visible = #moduleapi.Bind > 0
 			bindicon.Visible = not bindtext.Visible
-			bindicon.Image = getcustomasset('newvape/assets/new/bind.png')
+			bindicon.Image = getcustomasset('vapev4/assets/new/bind.png')
 			if not moduleapi.Enabled then
 				bindicon.ImageColor3 = color.Dark(uipallet.Text, 0.43)
 			end
@@ -3923,7 +3938,7 @@ function mainapi:CreateCategory(categorysettings)
 		modulebutton.MouseLeave:Connect(function()
 			hovered = false
 			if not moduleapi.Enabled and not modulechildren.Visible then
-				modulebutton.TextColor3 = color.Dark(uipallet.Text, 0.16)
+				modulebutton.TextColor3 = Color3.fromRGB(143, 143, 143)
 				modulebutton.BackgroundColor3 = uipallet.Main
 			end
 			bind.Visible = #moduleapi.Bind > 0 or hovered or modulechildren.Visible
@@ -4025,7 +4040,7 @@ function mainapi:CreateCategory(categorysettings)
 		arrow.ImageColor3 = Color3.fromRGB(220, 220, 220)
 	end)
 	arrowbutton.MouseLeave:Connect(function()
-		arrow.ImageColor3 = Color3.fromRGB(140, 140, 140)
+		arrow.ImageColor3 = Color3.fromRGB(143, 143, 143)
 	end)
 	children:GetPropertyChangedSignal('CanvasPosition'):Connect(function()
 		if self.ThreadFix then
@@ -4113,12 +4128,12 @@ function mainapi:CreateOverlay(categorysettings)
 	local title = Instance.new('TextLabel')
 	title.Name = 'Title'
 	title.Size = UDim2.new(1, -32, 0, 41)
-	title.Position = UDim2.fromOffset(math.abs(title.Size.X.Offset), 0)
+	title.Position = UDim2.fromOffset(math.abs(title.Size.X.Offset), -1)
 	title.BackgroundTransparency = 1
 	title.Text = categorysettings.Name
 	title.TextXAlignment = Enum.TextXAlignment.Left
 	title.TextColor3 = uipallet.Text
-	title.TextSize = 15
+	title.TextSize = 17
 	title.FontFace = uipallet.Font
 	title.Parent = window
 	local pin = Instance.new('ImageButton')
@@ -4127,7 +4142,7 @@ function mainapi:CreateOverlay(categorysettings)
 	pin.Position = UDim2.new(1, -47, 0, 12)
 	pin.BackgroundTransparency = 1
 	pin.AutoButtonColor = false
-	pin.Image = getcustomasset('newvape/assets/new/pin.png')
+	pin.Image = getcustomasset('vapev4/assets/new/pin.png')
 	pin.ImageColor3 = color.Dark(uipallet.Text, 0.43)
 	pin.Parent = window
 	local dotsbutton = Instance.new('TextButton')
@@ -4142,7 +4157,7 @@ function mainapi:CreateOverlay(categorysettings)
 	dots.Size = UDim2.fromOffset(3, 16)
 	dots.Position = UDim2.fromOffset(4, 12)
 	dots.BackgroundTransparency = 1
-	dots.Image = getcustomasset('newvape/assets/new/dots.png')
+	dots.Image = getcustomasset('vapev4/assets/new/dots.png')
 	dots.ImageColor3 = color.Light(uipallet.Main, 0.37)
 	dots.Parent = dotsbutton
 	local customchildren = Instance.new('Frame')
@@ -4297,7 +4312,7 @@ function mainapi:CreateCategoryList(categorysettings)
 	title.Text = categorysettings.Name
 	title.TextXAlignment = Enum.TextXAlignment.Left
 	title.TextColor3 = uipallet.Text
-	title.TextSize = 15
+	title.TextSize = 16
 	title.FontFace = uipallet.Font
 	title.Parent = window
 	local arrowbutton = Instance.new('TextButton')
@@ -4312,8 +4327,8 @@ function mainapi:CreateCategoryList(categorysettings)
 	arrow.Size = UDim2.fromOffset(9, 4)
 	arrow.Position = UDim2.fromOffset(20, 19)
 	arrow.BackgroundTransparency = 1
-	arrow.Image = getcustomasset('newvape/assets/new/expandup.png')
-	arrow.ImageColor3 = Color3.fromRGB(140, 140, 140)
+	arrow.Image = getcustomasset('vapev4/assets/new/expandup.png')
+	arrow.ImageColor3 = Color3.fromRGB(143, 143, 143)
 	arrow.Rotation = 180
 	arrow.Parent = arrowbutton
 	local children = Instance.new('ScrollingFrame')
@@ -4338,7 +4353,7 @@ function mainapi:CreateCategoryList(categorysettings)
 	settings.Position = UDim2.new(1, -52, 0, 13)
 	settings.BackgroundTransparency = 1
 	settings.AutoButtonColor = false
-	settings.Image = getcustomasset('newvape/assets/new/customsettings.png')
+	settings.Image = getcustomasset('vapev4/assets/new/customsettings.png')
 	settings.ImageColor3 = color.Dark(uipallet.Text, 0.43)
 	settings.Parent = window
 	local divider = Instance.new('Frame')
@@ -4388,7 +4403,7 @@ function mainapi:CreateCategoryList(categorysettings)
 	addbutton.Size = UDim2.fromOffset(16, 16)
 	addbutton.Position = UDim2.new(1, -26, 0, 8)
 	addbutton.BackgroundTransparency = 1
-	addbutton.Image = getcustomasset('newvape/assets/new/add.png')
+	addbutton.Image = getcustomasset('vapev4/assets/new/add.png')
 	addbutton.ImageColor3 = categorysettings.Color
 	addbutton.ImageTransparency = 0.3
 	addbutton.Parent = addbkg
@@ -4405,8 +4420,8 @@ function mainapi:CreateCategoryList(categorysettings)
 				if ind then
 					if val ~= 'default' then
 						table.remove(mainapi.Profiles, ind)
-						if isfile('newvape/profiles/'..val..mainapi.Place..'.txt') and delfile then
-							delfile('newvape/profiles/'..val..mainapi.Place..'.txt')
+						if isfile('vapev4/profiles/'..val..mainapi.Place..'.txt') and delfile then
+							delfile('vapev4/profiles/'..val..mainapi.Place..'.txt')
 						end
 					end
 				else
@@ -4472,7 +4487,7 @@ function mainapi:CreateCategoryList(categorysettings)
 				dots.Size = UDim2.fromOffset(3, 16)
 				dots.Position = UDim2.fromOffset(10, 9)
 				dots.BackgroundTransparency = 1
-				dots.Image = getcustomasset('newvape/assets/new/dots.png')
+				dots.Image = getcustomasset('vapev4/assets/new/dots.png')
 				dots.ImageColor3 = color.Light(uipallet.Main, 0.37)
 				dots.Parent = dotsbutton
 				local bind = Instance.new('TextButton')
@@ -4493,7 +4508,7 @@ function mainapi:CreateCategoryList(categorysettings)
 				bindicon.Size = UDim2.fromOffset(12, 12)
 				bindicon.Position = UDim2.new(0.5, -6, 0, 5)
 				bindicon.BackgroundTransparency = 1
-				bindicon.Image = getcustomasset('newvape/assets/new/bind.png')
+				bindicon.Image = getcustomasset('vapev4/assets/new/bind.png')
 				bindicon.ImageColor3 = color.Dark(uipallet.Text, 0.43)
 				bindicon.Parent = bind
 				local bindtext = Instance.new('TextLabel')
@@ -4509,15 +4524,15 @@ function mainapi:CreateCategoryList(categorysettings)
 				bind.MouseEnter:Connect(function()
 					bindtext.Visible = false
 					bindicon.Visible = not bindtext.Visible
-					bindicon.Image = getcustomasset('newvape/assets/new/edit.png')
+					bindicon.Image = getcustomasset('vapev4/assets/new/edit.png')
 					if v.Name ~= mainapi.Profile then
-						bindicon.ImageColor3 = color.Dark(uipallet.Text, 0.16)
+						bindicon.ImageColor3 = Color3.fromRGB(143, 143, 143)
 					end
 				end)
 				bind.MouseLeave:Connect(function()
 					bindtext.Visible = #v.Bind > 0
 					bindicon.Visible = not bindtext.Visible
-					bindicon.Image = getcustomasset('newvape/assets/new/bind.png')
+					bindicon.Image = getcustomasset('vapev4/assets/new/bind.png')
 					if v.Name ~= mainapi.Profile then
 						bindicon.ImageColor3 = color.Dark(uipallet.Text, 0.43)
 					end
@@ -4527,7 +4542,7 @@ function mainapi:CreateCategoryList(categorysettings)
 				bindcover.Size = UDim2.fromOffset(154, 33)
 				bindcover.BackgroundTransparency = 1
 				bindcover.Visible = false
-				bindcover.Image = getcustomasset('newvape/assets/new/bindbkg.png')
+				bindcover.Image = getcustomasset('vapev4/assets/new/bindbkg.png')
 				bindcover.ScaleType = Enum.ScaleType.Slice
 				bindcover.SliceCenter = Rect.new(0, 0, 141, 40)
 				bindcover.Parent = object
@@ -4564,7 +4579,7 @@ function mainapi:CreateCategoryList(categorysettings)
 					bind.Visible = true
 					if v.Name ~= mainapi.Profile then
 						objectstroke.Enabled = true
-						objecttitle.TextColor3 = color.Dark(uipallet.Text, 0.16)
+						objecttitle.TextColor3 = Color3.fromRGB(143, 143, 143)
 					end
 				end)
 				object.MouseLeave:Connect(function()
@@ -4646,7 +4661,7 @@ function mainapi:CreateCategoryList(categorysettings)
 				objecttitle.BackgroundTransparency = 1
 				objecttitle.Text = v
 				objecttitle.TextXAlignment = Enum.TextXAlignment.Left
-				objecttitle.TextColor3 = color.Dark(uipallet.Text, 0.16)
+				objecttitle.TextColor3 = Color3.fromRGB(143, 143, 143)
 				objecttitle.TextSize = 17
 				objecttitle.FontFace = uipallet.Font
 				objecttitle.Parent = object
@@ -4660,7 +4675,7 @@ function mainapi:CreateCategoryList(categorysettings)
 				close.BackgroundColor3 = Color3.new(1, 1, 1)
 				close.BackgroundTransparency = 1
 				close.AutoButtonColor = false
-				close.Image = getcustomasset('newvape/assets/new/closemini.png')
+				close.Image = getcustomasset('vapev4/assets/new/closemini.png')
 				close.ImageColor3 = color.Light(uipallet.Text, 0.2)
 				close.ImageTransparency = 0.5
 				close.Parent = object
@@ -4743,7 +4758,7 @@ function mainapi:CreateCategoryList(categorysettings)
 		arrow.ImageColor3 = Color3.fromRGB(220, 220, 220)
 	end)
 	arrowbutton.MouseLeave:Connect(function()
-		arrow.ImageColor3 = Color3.fromRGB(140, 140, 140)
+		arrow.ImageColor3 = Color3.fromRGB(143, 143, 143)
 	end)
 	arrowbutton.MouseButton1Click:Connect(function()
 		categoryapi:Expand()
@@ -4826,7 +4841,7 @@ function mainapi:CreateSearch()
 	searchicon.Size = UDim2.fromOffset(14, 14)
 	searchicon.Position = UDim2.new(1, -23, 0, 11)
 	searchicon.BackgroundTransparency = 1
-	searchicon.Image = getcustomasset('newvape/assets/new/search.png')
+	searchicon.Image = getcustomasset('vapev4/assets/new/search.png')
 	searchicon.ImageColor3 = color.Light(uipallet.Main, 0.37)
 	searchicon.Parent = searchbkg
 	local legiticon = Instance.new('ImageButton')
@@ -4834,7 +4849,7 @@ function mainapi:CreateSearch()
 	legiticon.Size = UDim2.fromOffset(29, 16)
 	legiticon.Position = UDim2.fromOffset(8, 11)
 	legiticon.BackgroundTransparency = 1
-	legiticon.Image = getcustomasset('newvape/assets/new/legit.png')
+	legiticon.Image = getcustomasset('vapev4/assets/new/legit.png')
 	legiticon.Parent = searchbkg
 	local legitdivider = Instance.new('Frame')
 	legitdivider.Name = 'LegitDivider'
@@ -4971,7 +4986,7 @@ function mainapi:CreateLegit()
 	icon.Size = UDim2.fromOffset(16, 16)
 	icon.Position = UDim2.fromOffset(18, 13)
 	icon.BackgroundTransparency = 1
-	icon.Image = getcustomasset('newvape/assets/new/legittab.png')
+	icon.Image = getcustomasset('vapev4/assets/new/legittab.png')
 	icon.ImageColor3 = uipallet.Text
 	icon.Parent = window
 	local close = addCloseButton(window)
@@ -5019,7 +5034,7 @@ function mainapi:CreateLegit()
 		title.Text = modulesettings.Name
 		title.TextXAlignment = Enum.TextXAlignment.Left
 		title.TextColor3 = color.Dark(uipallet.Text, 0.31)
-		title.TextSize = 15
+		title.TextSize = 16
 		title.FontFace = uipallet.Font
 		title.Parent = module
 		local knob = Instance.new('Frame')
@@ -5046,7 +5061,7 @@ function mainapi:CreateLegit()
 		dots.Size = UDim2.fromOffset(2, 12)
 		dots.Position = UDim2.fromOffset(6, 6)
 		dots.BackgroundTransparency = 1
-		dots.Image = getcustomasset('newvape/assets/new/dots.png')
+		dots.Image = getcustomasset('vapev4/assets/new/dots.png')
 		dots.ImageColor3 = color.Light(uipallet.Main, 0.37)
 		dots.Parent = dotsbutton
 		local shadow = Instance.new('TextButton')
@@ -5074,8 +5089,8 @@ function mainapi:CreateLegit()
 		settingstitle.BackgroundTransparency = 1
 		settingstitle.Text = modulesettings.Name
 		settingstitle.TextXAlignment = Enum.TextXAlignment.Left
-		settingstitle.TextColor3 = color.Dark(uipallet.Text, 0.16)
-		settingstitle.TextSize = 15
+		settingstitle.TextColor3 = Color3.fromRGB(143, 143, 143)
+		settingstitle.TextSize = 16
 		settingstitle.FontFace = uipallet.Font
 		settingstitle.Parent = settingspane
 		local back = Instance.new('ImageButton')
@@ -5083,7 +5098,7 @@ function mainapi:CreateLegit()
 		back.Size = UDim2.fromOffset(16, 16)
 		back.Position = UDim2.fromOffset(11, 13)
 		back.BackgroundTransparency = 1
-		back.Image = getcustomasset('newvape/assets/new/back.png')
+		back.Image = getcustomasset('vapev4/assets/new/back.png')
 		back.ImageColor3 = color.Light(uipallet.Main, 0.37)
 		back.Parent = settingspane
 		addCorner(settingspane)
@@ -5278,7 +5293,7 @@ function mainapi:CreateNotification(title, text, duration, type)
 		notification.Position = UDim2.new(1, 0, 1, -(29 + (78 * i)))
 		notification.ZIndex = 5
 		notification.BackgroundTransparency = 1
-		notification.Image = getcustomasset('newvape/assets/new/notification.png')
+		notification.Image = getcustomasset('vapev4/assets/new/notification.png')
 		notification.ScaleType = Enum.ScaleType.Slice
 		notification.SliceCenter = Rect.new(7, 7, 9, 9)
 		notification.Parent = notifications
@@ -5289,7 +5304,7 @@ function mainapi:CreateNotification(title, text, duration, type)
 		iconshadow.Position = UDim2.fromOffset(-5, -8)
 		iconshadow.ZIndex = 5
 		iconshadow.BackgroundTransparency = 1
-		iconshadow.Image = getcustomasset('newvape/assets/new/'..(type or 'info')..'.png')
+		iconshadow.Image = getcustomasset('vapev4/assets/new/'..(type or 'info')..'.png')
 		iconshadow.ImageColor3 = Color3.new()
 		iconshadow.ImageTransparency = 0.5
 		iconshadow.Parent = notification
@@ -5308,7 +5323,7 @@ function mainapi:CreateNotification(title, text, duration, type)
 		titlelabel.TextXAlignment = Enum.TextXAlignment.Left
 		titlelabel.TextYAlignment = Enum.TextYAlignment.Top
 		titlelabel.TextColor3 = Color3.fromRGB(209, 209, 209)
-		titlelabel.TextSize = 16
+		titlelabel.TextSize = 18
 		titlelabel.RichText = true
 		titlelabel.FontFace = uipallet.FontSemiBold
 		titlelabel.Parent = notification
@@ -5318,13 +5333,14 @@ function mainapi:CreateNotification(title, text, duration, type)
 		textshadow.Text = removeTags(text)
 		textshadow.TextColor3 = Color3.new()
 		textshadow.TextTransparency = 0.5
+		textshadow.TextSize = 15
 		textshadow.RichText = false
 		textshadow.FontFace = uipallet.Font
 		textshadow.Parent = notification
 		local textlabel = textshadow:Clone()
 		textlabel.Position = UDim2.fromOffset(-1, -1)
 		textlabel.Text = text
-		textlabel.TextColor3 = Color3.fromRGB(170, 170, 170)
+		textlabel.TextColor3 = Color3.fromRGB(143, 143, 143)
 		textlabel.TextTransparency = 0
 		textlabel.RichText = true
 		textlabel.Parent = textshadow
@@ -5448,8 +5464,8 @@ function mainapi:Load(skipgui, profile)
 	local guidata = {}
 	local savecheck = true
 
-	if isfile('newvape/profiles/'..game.GameId..'.gui.txt') then
-		guidata = loadJson('newvape/profiles/'..game.GameId..'.gui.txt')
+	if isfile('vapev4/profiles/'..game.GameId..'.gui.txt') then
+		guidata = loadJson('vapev4/profiles/'..game.GameId..'.gui.txt')
 		if not guidata then
 			guidata = {Categories = {}}
 			self:CreateNotification('Vape', 'Failed to load GUI settings.', 10, 'alert')
@@ -5495,8 +5511,8 @@ function mainapi:Load(skipgui, profile)
 		self.ProfileLabel.Size = UDim2.fromOffset(getfontsize(self.ProfileLabel.Text, self.ProfileLabel.TextSize, self.ProfileLabel.Font).X + 16, 24)
 	end
 
-	if isfile('newvape/profiles/'..self.Profile..self.Place..'.txt') then
-		local savedata = loadJson('newvape/profiles/'..self.Profile..self.Place..'.txt')
+	if isfile('vapev4/profiles/'..self.Profile..self.Place..'.txt') then
+		local savedata = loadJson('vapev4/profiles/'..self.Profile..self.Place..'.txt')
 		if not savedata then
 			savedata = {Categories = {}, Modules = {}, Legit = {}}
 			self:CreateNotification('Vape', 'Failed to load '..self.Profile..' profile.', 10, 'alert')
@@ -5580,7 +5596,7 @@ function mainapi:Load(skipgui, profile)
 		image.Size = UDim2.fromOffset(26, 26)
 		image.Position = UDim2.fromOffset(3, 3)
 		image.BackgroundTransparency = 1
-		image.Image = getcustomasset('newvape/assets/new/vape.png')
+		image.Image = getcustomasset('vapev4/assets/new/vape.png')
 		image.Parent = button
 		local buttoncorner = Instance.new('UICorner')
 		buttoncorner.Parent = button
@@ -5675,8 +5691,8 @@ function mainapi:Save(newprofile)
 		}
 	end
 
-	writefile('newvape/profiles/'..game.GameId..'.gui.txt', httpService:JSONEncode(guidata))
-	writefile('newvape/profiles/'..self.Profile..self.Place..'.txt', httpService:JSONEncode(savedata))
+	writefile('vapev4/profiles/'..game.GameId..'.gui.txt', httpService:JSONEncode(guidata))
+	writefile('vapev4/profiles/'..self.Profile..self.Place..'.txt', httpService:JSONEncode(savedata))
 end
 
 function mainapi:SaveOptions(object, savedoptions)
@@ -5781,7 +5797,7 @@ tooltip.ZIndex = 5
 tooltip.BackgroundColor3 = color.Dark(uipallet.Main, 0.02)
 tooltip.Visible = false
 tooltip.Text = ''
-tooltip.TextColor3 = color.Dark(uipallet.Text, 0.16)
+tooltip.TextColor3 = Color3.fromRGB(143, 143, 143)
 tooltip.TextSize = 14
 tooltip.FontFace = uipallet.Font
 tooltip.Parent = scaledgui
@@ -5845,32 +5861,32 @@ mainapi:CreateGUI()
 mainapi.Categories.Main:CreateDivider()
 mainapi:CreateCategory({
 	Name = 'Combat',
-	Icon = getcustomasset('newvape/assets/new/combaticon.png'),
+	Icon = getcustomasset('vapev4/assets/new/combaticon.png'),
 	Size = UDim2.fromOffset(13, 14)
 })
 mainapi:CreateCategory({
 	Name = 'Blatant',
-	Icon = getcustomasset('newvape/assets/new/blatanticon.png'),
+	Icon = getcustomasset('vapev4/assets/new/blatanticon.png'),
 	Size = UDim2.fromOffset(14, 14)
 })
 mainapi:CreateCategory({
 	Name = 'Render',
-	Icon = getcustomasset('newvape/assets/new/rendericon.png'),
+	Icon = getcustomasset('vapev4/assets/new/rendericon.png'),
 	Size = UDim2.fromOffset(15, 14)
 })
 mainapi:CreateCategory({
 	Name = 'Utility',
-	Icon = getcustomasset('newvape/assets/new/utilityicon.png'),
+	Icon = getcustomasset('vapev4/assets/new/utilityicon.png'),
 	Size = UDim2.fromOffset(15, 14)
 })
 mainapi:CreateCategory({
 	Name = 'World',
-	Icon = getcustomasset('newvape/assets/new/worldicon.png'),
+	Icon = getcustomasset('vapev4/assets/new/worldicon.png'),
 	Size = UDim2.fromOffset(14, 14)
 })
 mainapi:CreateCategory({
 	Name = 'Inventory',
-	Icon = getcustomasset('newvape/assets/new/inventoryicon.png'),
+	Icon = getcustomasset('vapev4/assets/new/inventoryicon.png'),
 	Size = UDim2.fromOffset(15, 14)
 })
 mainapi.Categories.Main:CreateDivider('misc')
@@ -5886,7 +5902,7 @@ local friendscolor = {
 }
 local friendssettings = {
 	Name = 'Friends',
-	Icon = getcustomasset('newvape/assets/new/friendstab.png'),
+	Icon = getcustomasset('vapev4/assets/new/friendstab.png'),
 	Size = UDim2.fromOffset(17, 16),
 	Placeholder = 'Roblox username',
 	Color = Color3.fromRGB(5, 134, 105),
@@ -5939,7 +5955,7 @@ mainapi:Clean(friends.ColorUpdate)
 ]]
 mainapi:CreateCategoryList({
 	Name = 'Profiles',
-	Icon = getcustomasset('newvape/assets/new/profilesicon.png'),
+	Icon = getcustomasset('vapev4/assets/new/profilesicon.png'),
 	Size = UDim2.fromOffset(17, 10),
 	Position = UDim2.fromOffset(12, 16),
 	Placeholder = 'Type name',
@@ -5952,7 +5968,7 @@ mainapi:CreateCategoryList({
 local targets
 targets = mainapi:CreateCategoryList({
 	Name = 'Targets',
-	Icon = getcustomasset('newvape/assets/new/friendstab.png'),
+	Icon = getcustomasset('vapev4/assets/new/friendstab.png'),
 	Size = UDim2.fromOffset(17, 16),
 	Placeholder = 'Roblox username',
 	Function = function()
@@ -5980,14 +5996,14 @@ general:CreateButton({
 	Name = 'Reset current profile',
 	Function = function()
 	mainapi.Save = function() end
-		if isfile('newvape/profiles/'..mainapi.Profile..mainapi.Place..'.txt') and delfile then
-			delfile('newvape/profiles/'..mainapi.Profile..mainapi.Place..'.txt')
+		if isfile('vapev4/profiles/'..mainapi.Profile..mainapi.Place..'.txt') and delfile then
+			delfile('vapev4/profiles/'..mainapi.Profile..mainapi.Place..'.txt')
 		end
 		shared.vapereload = true
 		if shared.VapeDeveloper then
-			loadstring(readfile('newvape/loader.lua'), 'loader')()
+			loadstring(readfile('vapev4/loader.lua'), 'loader')()
 		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/loader.lua', true))()
+			loadstring(game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/'..readfile('vapev4/profiles/commit.txt')..'/loader.lua', true))()
 		end
 	end,
 	Tooltip = 'This will set your profile to the default settings of Vape'
@@ -6004,9 +6020,9 @@ general:CreateButton({
 	Function = function()
 		shared.vapereload = true
 		if shared.VapeDeveloper then
-			loadstring(readfile('newvape/loader.lua'), 'loader')()
+			loadstring(readfile('vapev4/loader.lua'), 'loader')()
 		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/loader.lua', true))()
+			loadstring(game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/'..readfile('vapev4/profiles/commit.txt')..'/loader.lua', true))()
 		end
 	end,
 	Tooltip = 'Reloads vape for debugging purposes'
@@ -6205,7 +6221,7 @@ mainapi.Categories.Main:CreateBind()
 
 local textgui = mainapi:CreateOverlay({
 	Name = 'Text GUI',
-	Icon = getcustomasset('newvape/assets/new/textguiicon.png'),
+	Icon = getcustomasset('vapev4/assets/new/textguiicon.png'),
 	Size = UDim2.fromOffset(16, 12),
 	Position = UDim2.fromOffset(12, 14),
 	Function = function()
@@ -6229,7 +6245,7 @@ local textguifont = textgui:CreateFont({
 local textguicolor
 local textguicolordrop = textgui:CreateDropdown({
 	Name = 'Color Mode',
-	List = {'Match GUI color', 'Custom color'},
+	List = {'Match GUI', 'Custom'},
 	Function = function(val)
 		textguicolor.Object.Visible = val == 'Custom color'
 		mainapi:UpdateTextGUI()
@@ -6339,8 +6355,8 @@ local textguimodules = textgui:CreateToggle({
 textguimoduleslist = textgui:CreateTextList({
 	Name = 'Blacklist',
 	Tooltip = 'Name of module to hide.',
-	Icon = getcustomasset('newvape/assets/new/blockedicon.png'),
-	Tab = getcustomasset('newvape/assets/new/blockedtab.png'),
+	Icon = getcustomasset('vapev4/assets/new/blockedicon.png'),
+	Tab = getcustomasset('vapev4/assets/new/blockedtab.png'),
 	TabSize = UDim2.fromOffset(21, 16),
 	Color = Color3.fromRGB(250, 50, 56),
 	Function = function()
@@ -6424,7 +6440,7 @@ VapeLogo.BackgroundTransparency = 1
 VapeLogo.BorderSizePixel = 0
 VapeLogo.Visible = false
 VapeLogo.BackgroundColor3 = Color3.new()
-VapeLogo.Image = getcustomasset('newvape/assets/new/textvape.png')
+VapeLogo.Image = getcustomasset('vapev4/assets/new/textvape.png')
 VapeLogo.Parent = textgui.Children
 
 local lastside = textgui.Children.AbsolutePosition.X > (gui.AbsoluteSize.X / 2)
@@ -6446,7 +6462,7 @@ VapeLogoV4.Position = UDim2.new(1, 1, 0, 1)
 VapeLogoV4.BackgroundColor3 = Color3.new()
 VapeLogoV4.BackgroundTransparency = 1
 VapeLogoV4.BorderSizePixel = 0
-VapeLogoV4.Image = getcustomasset('newvape/assets/new/textv5.png')
+VapeLogoV4.Image = getcustomasset('vapev4/assets/new/textv5.png')
 VapeLogoV4.Parent = VapeLogo
 local VapeLogoShadow = VapeLogo:Clone()
 VapeLogoShadow.Position = UDim2.fromOffset(1, 1)
@@ -6516,7 +6532,7 @@ local targetinfoobj
 local targetinfobcolor
 targetinfoobj = mainapi:CreateOverlay({
 	Name = 'Target Info',
-	Icon = getcustomasset('newvape/assets/new/targetinfoicon.png'),
+	Icon = getcustomasset('vapev4/assets/new/targetinfoicon.png'),
 	Size = UDim2.fromOffset(14, 14),
 	Position = UDim2.fromOffset(12, 14),
 	CategorySize = 240,
@@ -6835,7 +6851,7 @@ function mainapi:UpdateTextGUI(afterload)
 				else
    				  	holdertext.Text = i
 				end
-				holdertext.TextSize = 17
+				holdertext.TextSize = 18
 				holdertext.FontFace = textguifont.Value
 				holdertext.RichText = true
 				local size = getfontsize(removeTags(holdertext.Text), holdertext.TextSize, holdertext.FontFace)
