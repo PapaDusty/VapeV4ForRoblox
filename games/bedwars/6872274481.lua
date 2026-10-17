@@ -1394,9 +1394,7 @@ run(function()
                 end
             end
         end,
-        ExtraText = function()
-            return tostring(CPS.ValueMin)..'-'..tostring(CPS.ValueMax)
-        end,
+		Suffix = { Extended = function() return tostring(CPS.ValueMin)..'-'..tostring(CPS.ValueMax) end },
         Tooltip = 'Hold attack button to automatically click'
     })
     CPS = AutoClicker:CreateTwoSlider({
@@ -1841,7 +1839,6 @@ run(function()
                         projectileHitting = false
 
                         if not tpbackup and oldroot then
-                            -- Calculate dynamic offset matching air time plus extra buffer to prevent player hitting ground
                             local currentAirTime = antihitautoair.Enabled and 0.14 or antihitairtime.Value
                             local calculatedHeight = (0.5 * workspace.Gravity * (currentAirTime ^ 2)) + 6
                             oldroot.CFrame += Vector3.new(0, math.clamp(calculatedHeight, 10, 35), 0)
@@ -1859,9 +1856,10 @@ run(function()
                 antihitting = false
             end
         end,
-        ExtraText = function()
-            return antihitautoair and antihitautoair.Enabled and "Predict" or "Always"
-        end
+		Suffix = { Basic = function() 
+			return antihitautoair and antihitautoair.Enabled and "Predict" or "Always" 
+		end},
+		Tooltip = 'Prevents people from hitting you'
     })
 
     antihitsettings = antihit:CreateTargets({
@@ -2101,9 +2099,9 @@ run(function()
 				bedwars.KnockbackUtil.applyKnockback = old
 			end
 		end,
-		ExtraText = function()
-			return BoostToggle.Enabled and (BoostMultiplier.Value .. 'x') or (Vertical.Value .. '%' .. ' | ' .. Horizontal.Value .. '%')
-		end,
+		Suffix = { Extended = function() 
+			return BoostToggle.Enabled and (BoostMultiplier.Value .. 'x') or (Horizontal.Value .. 'h' .. ' ' .. Vertical.Value .. 'v')
+		end},
 		Tooltip = 'Manipulates registered knockback'
 	})
 	BoostToggle = Velocity:CreateToggle({
@@ -2513,7 +2511,6 @@ run(function()
                 end
             end
         end,
-        ExtraText = function() return 'Safe' end,
         Tooltip = 'Makes you go zoom.'
     })
     Value = Fly:CreateSlider({
@@ -2953,9 +2950,9 @@ run(function()
                 end
             end
         end,
-        ExtraText = function()
-            return 	Target.Value
-        end,
+		Suffix = { Basic = function() 
+			return Target.Value 
+		end},
         Tooltip = 'Attack players around you\nwithout aiming at them.'
     })
     Targets = Killaura:CreateTargets({
@@ -3462,9 +3459,9 @@ run(function()
                 end
             end
         end,
-        ExtraText = function()
-            return 'Heatseeker'
-        end,
+		Suffix = { Basic = function() 
+			return 'Heatseeker' 
+		end},
         Tooltip = 'Lets you jump farther'
     })
     Value = LongJump:CreateSlider({
@@ -3561,9 +3558,9 @@ run(function()
                 end))
             end
         end,
-		ExtraText = function()
-            return 'Velo'
-        end,
+		Suffix = { Extended = function() 
+			return 'Velocity' 
+		end},
         Tooltip = 'Take no fall damage.'
     })
 end)
@@ -3794,9 +3791,9 @@ run(function()
 				until not ProjectileAura.Enabled
 			end
 		end,
-		ExtraText = function()
-			return Range.Value
-		end,
+		Suffix = { Basic = function() 
+			return Range.Value 
+		end},
 		Tooltip = 'Shoots people around you'
 	})
 	Targets = ProjectileAura:CreateTargets({
@@ -3873,9 +3870,9 @@ run(function()
 				end))
 			end
 		end,
-		ExtraText = function()
-			return "Heatseeker"
-		end,
+		Suffix = { Basic = function() 
+			return 'Heatseeker' 
+		end},
 		Tooltip = 'Increases your movement with various methods.'
 	})
 	Value = Speed:CreateSlider({
