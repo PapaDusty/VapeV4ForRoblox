@@ -6863,7 +6863,7 @@ function mainapi:UpdateTextGUI(afterload)
 
 					local suffixFunc
 					if suffixMode == 'Basic' then
-						suffixFunc = basicSuffix or extendedSuffix
+						suffixFunc = basicSuffix
 					elseif suffixMode == 'Extended' then
 						suffixFunc = extendedSuffix or basicSuffix
 					end
